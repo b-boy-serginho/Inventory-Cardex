@@ -11,8 +11,7 @@
             <xpath expr="//field[@name='product_id']" position="after">
                 <field name="product_cost" string="Costo Unit." 
                        widget="monetary" 
-                       options="{'currency_field': 'company_currency_id'}"
-                       optional="show"/>
+                       options="{'currency_field': 'company_currency_id'}"/>
                 <field name="total_cost" string="Costo Total" 
                        widget="monetary" 
                        options="{'currency_field': 'company_currency_id'}"
@@ -102,8 +101,7 @@
             <xpath expr="//field[@name='product_id']" position="after">
                 <field name="product_cost" string="Costo" 
                        widget="monetary"
-                       options="{'currency_field': 'company_currency_id'}"
-                       optional="show"/>
+                       options="{'currency_field': 'company_currency_id'}"/>
                 <field name="line_cost" string="Costo Total" 
                        widget="monetary"
                        options="{'currency_field': 'company_currency_id'}"

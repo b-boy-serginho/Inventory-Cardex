@@ -1,0 +1,247 @@
+REQUERIMIENTOS
+Reportes/Historial de movimientos
+- El reporte es en PDF
+- se mantiene el header
+- Segun el proceso que exista se tenga una valoración en cantidad, costo, de los ingresos y salidas, para el saldo
+- Que productos estoy comprando, vendiendo, Cuando se llame a un producto tengamos la fecha, cuanto hemos comprado, 
+  si ha sido entrada que se valore tanto en cantidad y costo, y cuando ha
+  salido Tambien que se valore tanto en cantidad y costo
+- cuando busque por ejemplo el producto "aro 48", 
+  me tiene que mostrar todos los movimientos de esos productos(detalles),
+  pero de las entradas y salidas
+- Color verde es ingreso, Color rojo es salida
+- cuando ingrese a los historias, La fecha que se muestre del mas antiguo al mas nuevo
+A esta tabla, tenemos que agregarle el costo de entrada, costo de salida, costo subtotal 
+
+PREGUNTAS A REALIZAR
+- De que modulo jalo los campos
+- 
+\d product_attr_exclusion_value_ids_rel;
+\d product_attribute;
+\d product_attribute_custom_value;
+\d product_attribute_product_template_rel;
+\d product_attribute_value;
+\d product_attribute_value_product_template_attribute_line_rel;
+\d product_category;
+\d product_document;
+\d product_label_layout;
+\d product_label_layout_product_product_rel;
+\d product_label_layout_product_template_rel;
+\d product_label_layout_stock_move_rel;
+\d product_optional_rel;
+\d product_packaging;
+\d product_pricelist;		//NO SIRVE
+\d product_pricelist_item;
+\d product_product;	//NO SIRVE
+\d product_product_stock_track_confirmation_rel;
+\d product_removal;
+\d product_replenish;
+\d product_supplier_taxes_rel;
+\d product_supplierinfo;
+\d product_supplierinfo_stock_replenishment_info_rel;
+\d product_tag;
+\d product_tag_product_product_rel;
+\d product_tag_product_template_rel;
+\d product_taxes_rel;
+\d product_template;
+\d product_template_attribute_exclusion;
+\d product_template_attribute_line;
+\d product_template_attribute_value;
+\d product_template_attribute_value_sale_order_line_rel;
+\d product_variant_combination;
+
+\d stock_assign_serial;
+\d stock_backorder_confirmation;
+\d stock_backorder_confirmation_line;
+\d stock_change_product_qty;
+\d stock_conflict_quant_rel;
+\d stock_inventory_adjustment_name;
+\d stock_inventory_adjustment_name_stock_quant_rel;
+\d stock_inventory_conflict;
+\d stock_inventory_conflict_stock_quant_rel;
+\d stock_inventory_warning;
+\d stock_inventory_warning_stock_quant_rel;
+\d stock_landed_cost;
+\d stock_landed_cost_lines;
+\d stock_landed_cost_stock_picking_rel;
+\d stock_location;
+\d stock_lot;
+\d stock_move;
+\d stock_move_created_purchase_line_rel;
+\d stock_move_line;
+\d stock_move_line_consume_rel;
+\d stock_move_move_rel;
+\d stock_orderpoint_snooze;
+\d stock_orderpoint_snooze_stock_warehouse_orderpoint_rel;
+\d stock_package_destination;
+\d stock_package_level;
+\d stock_package_type;
+\d stock_package_type_stock_putaway_rule_rel;
+\d stock_picking;
+\d stock_picking_backorder_rel;
+\d stock_picking_sms_rel;
+\d stock_picking_type;
+\d stock_putaway_rule;
+\d stock_quant;
+\d stock_quant_package;
+\d stock_quant_relocate;
+
+CONSULTAS SQL
+\d stock_quant;
+\d stock_move_line;
+\dt stock*
+SELECT * FROM stock_move_line;
+SELECT date, product_id, location_id, location_dest_id, quantity, reference, state FROM stock_move_line;
+
+A ESTA CONSULTA, AGREGARLE EL costo 
+\d product_template;
+SELECT * FROM product_template;
+SELECT name, list_price FROM product_template;
+
+\d product_product;
+SELECT * FROM stock_quant;
+SELECT product_id, quantity, inventory_diff_quantity FROM stock_quant;
+
+SELECT * FROM pos_order;
+SELECT * FROM pos_daily_receipt_sequence;
+SELECT * FROM pos_session;
+
+SELECT pos_order.daily_counter FROM pos_order;
+SELECT pos_order.tracking_number FROM pos_order;
+SELECT pos_daily_sequence.tracking_number FROM pos_order;
+SELECT pos_session.tracking_number FROM pos_order;
+------------------------------------------
+SELECT id, product_tmpl_id, standard_price, default_code 
+FROM product_product 
+WHERE product_tmpl_id = 1;
+------------------------------------------------------------------
+
+SELECT id, name, product_cost, product_qty, 
+       (product_cost * product_qty) as total_cost_calculado
+FROM stock_move
+WHERE product_cost IS NOT NULL
+LIMIT 10;
+
+SELECT id, product_cost, quantity,
+       (product_cost * quantity) as line_cost_calculado
+FROM stock_move_line
+WHERE product_cost IS NOT NULL
+
+view_stock_cost_report_wizard_form
+stock.cost.report.wizard.form
+LIMIT 10;
+------------------------------------------------------------------
+openpg
+openpgwd
+
+py -0
+------------------------------------------------------------------
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: odoo17",
+            "type": "python",
+            "request": "launch",
+            "stopOnEntry": false,
+            "python": "C:\\Users\\megus\\AppData\\Local\\Programs\\Python\\Python310\\python.exe",
+            "program": "${workspaceRoot}\\odoo-bin",
+            "console": "integratedTerminal",
+            "args": [
+                "--config=${workspaceRoot}\\odoo.conf"
+            ],
+            "cwd": "${workspaceRoot}",
+            "env": {}
+        }
+    ]
+}
+
+---------------------------------
+# server/debian/odoo.conf
+[options]
+; This is the password that allows database operations:
+; admin_passwd = admin
+db_host = False
+db_port = False
+db_user = admin
+db_password = admin
+;addons_path = server/addons
+default_productivity_apps = True
+
+--------------------------------------
+# server/odoo.conf
+[options]
+addons_path = server/odoo/addons, server/addons
+admin_passwd = $pbkdf2-sha512$600000$uDcGgFAqZWzNubf2HmNM6Q$u2m8LJghw15XQ4s6Wj9BrI0xpsXWjFtj9k84DEznxVXiPu2sw9O.YwLxQbd0KDOOffwmmZGRVcAZVH9FT6ZlEg
+bin_path = C:\Program Files\Odoo 17.0.20240721\thirdparty
+csv_internal_sep = ,
+data_dir = C:\Program Files\Odoo 17.0.20240721\sessions
+db_host = localhost
+db_maxconn = 64
+db_maxconn_gevent = False
+db_name = False
+db_password = admin
+db_port = 5432
+db_sslmode = prefer
+db_template = template0
+db_user = postgres
+dbfilter = 
+default_productivity_apps = True
+email_from = False
+from_filter = False
+geoip_city_db = c:\usr\share\geoip\geolite2-city.mmdb
+geoip_country_db = c:\usr\share\geoip\geolite2-country.mmdb
+gevent_port = 8072
+http_enable = True
+http_interface = 
+http_port = 8069
+import_partial = 
+limit_memory_hard = None
+limit_memory_soft = None
+limit_request = None
+limit_time_cpu = None
+limit_time_real = None
+limit_time_real_cron = None
+limit_time_worker_cron = 0
+list_db = True
+log_db = False
+log_db_level = warning
+log_handler = :INFO
+log_level = info
+# logfile = C:\Program Files\Odoo 17.0.20240721\server\odoo.log
+max_cron_threads = 2
+osv_memory_count_limit = 0
+pg_path = 
+pidfile = 
+pre_upgrade_scripts = 
+proxy_mode = False
+reportgz = False
+screencasts = 
+screenshots = c:\users\megus\appdata\local\temp\odoo_tests
+server_wide_modules = base,web
+smtp_password = False
+smtp_port = 25
+smtp_server = localhost
+smtp_ssl = False
+smtp_ssl_certificate_filename = False
+smtp_ssl_private_key_filename = False
+smtp_user = False
+syslog = False
+test_enable = False
+test_file = 
+test_tags = None
+transient_age_limit = 1.0
+translate_modules = ['all']
+unaccent = False
+upgrade_path = 
+websocket_keep_alive_timeout = 3600
+websocket_rate_limit_burst = 10
+websocket_rate_limit_delay = 0.2
+without_demo = False
+workers = None
+x_sendfile = False
+
+
+
+
