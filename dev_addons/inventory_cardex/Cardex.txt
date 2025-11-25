@@ -1,0 +1,8 @@
+REQUERIMIENTOS
+- se mantiene el header
+- Cuando se llame a un producto tengamos la fecha, cuanto hemos comprado, 
+  si ha sido entrada que se valore tanto en cantidad y costo, y cuando ha
+  salido Tambien que se valore tanto en cantidad y costo
+- cuando busque por ejemplo el producto "aro 48", 
+  me tiene que mostrar todos los movimientos de esos productos(detalles)
+- La fecha que se muestre del mas antiguo al mas nuevo

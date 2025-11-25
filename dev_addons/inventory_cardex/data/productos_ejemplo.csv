@@ -1,0 +1,6 @@
+id,name,type,list_price,standard_price,default_code,barcode
+product_csv_001,Impresora HP LaserJet,product,450.00,250.00,IMP-001,7501234567894
+product_csv_002,Cable HDMI 2m,product,15.99,5.00,CAB-001,7501234567895
+product_csv_003,Webcam Logitech HD,product,89.99,45.00,WEB-001,7501234567896
+product_csv_004,Auriculares Sony,product,120.00,60.00,AUR-001,7501234567897
+product_csv_005,Disco Duro 1TB,product,75.00,40.00,HDD-001,7501234567898

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Plantilla para el reporte PDF -->
+    <template id="report_stock_cost_document">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <!-- Encabezado del reporte -->
+                    <div class="row mb-4">
+                        <div class="col-12 text-center">
+                            <h2 style="color: #2C3E50; border-bottom: 3px solid #3498DB; padding-bottom: 10px;">
+                                📊 REPORTE DE COSTOS DE INVENTARIO
+                            </h2>
+                        </div>
+                    </div>
+
+                    <!-- Información del período -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <p><strong>Período:</strong> 
+                                <span t-esc="doc.date_from.strftime('%d/%m/%Y')"/> - 
+                                <span t-esc="doc.date_to.strftime('%d/%m/%Y')"/>
+                            </p>
+                        </div>
+                        <div class="col-6 text-right">
+                            <p><strong>Generado:</strong> 
+                                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M:%S')"/>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Obtener datos del reporte -->
+                    <t t-set="data" t-value="doc._get_report_data()"/>
+
+                    <!-- Resumen ejecutivo -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div style="background-color: #ECF0F1; padding: 15px; border-radius: 5px;">
+                                <h4 style="color: #2C3E50; margin-top: 0;">📈 Resumen Ejecutivo</h4>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <strong>Total de Movimientos:</strong> 
+                                        <span t-esc="len(data['moves'])"/>
+                                    </div>
+                                    <div class="col-4">
+                                        <strong>Cantidad Total:</strong> 
+                                        <span t-esc="'%.2f' % data['total_quantity']"/>
+                                    </div>
+                                    <div class="col-4">
+                                        <strong>Valor Total:</strong> 
+                                        <span t-esc="'$%.2f' % data['total_cost']" style="color: #27AE60; font-weight: bold;"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de movimientos -->
+                    <table class="table table-sm table-bordered" style="margin-top: 20px;">
+                        <thead style="background-color: #3498DB; color: white;">
+                            <tr>
+                                <th class="text-center">ID</th>
+                                <th class="text-center">Fecha</th>
+                                <th>Referencia</th>
+                                <th>Producto</th>
+                                <th class="text-right">Cantidad</th>
+                                <th class="text-right">Costo Unit.</th>
+                                <th class="text-right">Costo Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="data['moves']" t-as="move">
+                                <tr>
+                                    <td class="text-center">
+                                        <span t-esc="move.id"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="move.date.strftime('%d/%m/%Y')"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="move.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="move.product_id.display_name"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="'%.2f' % move.product_qty"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="'$%.2f' % move.product_cost"/>
+                                    </td>
+                                    <td class="text-right" style="font-weight: bold;">
+                                        <span t-esc="'$%.2f' % (move.product_cost * move.product_qty)"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot style="background-color: #ECF0F1; font-weight: bold;">
+                            <tr>
+                                <td colspan="4" class="text-right">TOTALES:</td>
+                                <td class="text-right">
+                                    <span t-esc="'%.2f' % data['total_quantity']"/>
+                                </td>
+                                <td></td>
+                                <td class="text-right" style="color: #27AE60; font-size: 16px;">
+                                    <span t-esc="'$%.2f' % data['total_cost']"/>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <!-- Pie de página con notas -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <p style="font-size: 10px; color: #7F8C8D;">
+                                <strong>Nota:</strong> Este reporte incluye únicamente movimientos en estado 'Hecho'. 
+                                Los costos reflejan el valor almacenado en la base de datos al momento de la generación del reporte.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Definición del reporte -->
+    <record id="action_report_stock_cost" model="ir.actions.report">
+        <field name="name">Reporte de Costos de Inventario</field>
+        <field name="model">stock.cost.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inventory_cardex.report_stock_cost_document</field>
+        <field name="report_file">inventory_cardex.report_stock_cost_document</field>
+        <field name="binding_model_id" ref="model_stock_cost_report_wizard"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Reporte_Costos_%s_%s' % (object.date_from, object.date_to)</field>
+    </record>
+
+</odoo>

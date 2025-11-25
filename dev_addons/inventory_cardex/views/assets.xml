@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Assets para Odoo 17 - Nueva sintaxis -->
+    <record id="inventory_cardex_assets" model="ir.asset">
+        <field name="name">Inventory Cardex Assets</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">inventory_cardex/static/src/js/database_inspector.js</field>
+    </record>
+    
+    <record id="inventory_cardex_debug_assets" model="ir.asset">
+        <field name="name">Inventory Cardex Debug Assets</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">inventory_cardex/static/src/js/stock_move_debug.js</field>
+    </record>
+</odoo>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Productos de Demostración -->
+    <record id="product_demo_laptop" model="product.product">
+        <field name="name">Laptop Dell Inspiron</field>
+        <field name="type">product</field>
+        <field name="list_price">1200.00</field>
+        <field name="standard_price">800.00</field>
+        <field name="default_code">LAP-001</field>
+        <field name="barcode">7501234567890</field>
+    </record>
+
+    <record id="product_demo_mouse" model="product.product">
+        <field name="name">Mouse Logitech MX Master</field>
+        <field name="type">product</field>
+        <field name="list_price">99.99</field>
+        <field name="standard_price">50.00</field>
+        <field name="default_code">MOU-001</field>
+        <field name="barcode">7501234567891</field>
+    </record>
+
+    <record id="product_demo_keyboard" model="product.product">
+        <field name="name">Teclado Mecánico RGB</field>
+        <field name="type">product</field>
+        <field name="list_price">150.00</field>
+        <field name="standard_price">80.00</field>
+        <field name="default_code">KEY-001</field>
+        <field name="barcode">7501234567892</field>
+    </record>
+
+    <record id="product_demo_monitor" model="product.product">
+        <field name="name">Monitor LG 27 pulgadas</field>
+        <field name="type">product</field>
+        <field name="list_price">350.00</field>
+        <field name="standard_price">200.00</field>
+        <field name="default_code">MON-001</field>
+        <field name="barcode">7501234567893</field>
+    </record>
+
+    <!-- Cliente de Demostración -->
+    <record id="partner_demo_cliente" model="res.partner">
+        <field name="name">Empresa Demo S.A.</field>
+        <field name="street">Av. Principal 123</field>
+        <field name="city">Ciudad de México</field>
+        <field name="phone">+52 55 1234 5678</field>
+        <field name="email">contacto@empresademo.com</field>
+        <field name="customer_rank">1</field>
+    </record>
+
+    <!-- Proveedor de Demostración -->
+    <record id="partner_demo_proveedor" model="res.partner">
+        <field name="name">Proveedor Tech S.A.</field>
+        <field name="street">Calle Comercio 456</field>
+        <field name="city">Guadalajara</field>
+        <field name="phone">+52 33 9876 5432</field>
+        <field name="email">ventas@proveedortech.com</field>
+        <field name="supplier_rank">1</field>
+    </record>
+
+    <!-- Ubicación de Almacén -->
+    <record id="stock_location_demo_shelf_a" model="stock.location">
+        <field name="name">Estante A</field>
+        <field name="location_id" ref="stock.stock_location_stock"/>
+        <field name="usage">internal</field>
+    </record>
+
+    <record id="stock_location_demo_shelf_b" model="stock.location">
+        <field name="name">Estante B</field>
+        <field name="location_id" ref="stock.stock_location_stock"/>
+        <field name="usage">internal</field>
+    </record>
+
+    <!-- Recepción de Mercancía (Picking IN) -->
+    <record id="picking_demo_in_001" model="stock.picking">
+        <field name="partner_id" ref="partner_demo_proveedor"/>
+        <field name="picking_type_id" ref="stock.picking_type_in"/>
+        <field name="location_id" ref="stock.stock_location_suppliers"/>
+        <field name="location_dest_id" ref="stock.stock_location_stock"/>
+        <field name="scheduled_date" eval="(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+
+    <record id="move_demo_in_001_laptop" model="stock.move">
+        <field name="name">Recepción Laptops</field>
+        <field name="picking_id" ref="picking_demo_in_001"/>
+        <field name="product_id" ref="product_demo_laptop"/>
+        <field name="product_uom_qty">10</field>
+        <field name="product_uom" ref="uom.product_uom_unit"/>
+        <field name="location_id" ref="stock.stock_location_suppliers"/>
+        <field name="location_dest_id" ref="stock.stock_location_stock"/>
+    </record>
+
+    <record id="move_demo_in_001_mouse" model="stock.move">
+        <field name="name">Recepción Mouse</field>
+        <field name="picking_id" ref="picking_demo_in_001"/>
+        <field name="product_id" ref="product_demo_mouse"/>
+        <field name="product_uom_qty">25</field>
+        <field name="product_uom" ref="uom.product_uom_unit"/>
+        <field name="location_id" ref="stock.stock_location_suppliers"/>
+        <field name="location_dest_id" ref="stock.stock_location_stock"/>
+    </record>
+
+    <!-- Entrega a Cliente (Picking OUT) -->
+    <record id="picking_demo_out_001" model="stock.picking">
+        <field name="partner_id" ref="partner_demo_cliente"/>
+        <field name="picking_type_id" ref="stock.picking_type_out"/>
+        <field name="location_id" ref="stock.stock_location_stock"/>
+        <field name="location_dest_id" ref="stock.stock_location_customers"/>
+        <field name="scheduled_date" eval="(datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+
+    <record id="move_demo_out_001_laptop" model="stock.move">
+        <field name="name">Entrega Laptop</field>
+        <field name="picking_id" ref="picking_demo_out_001"/>
+        <field name="product_id" ref="product_demo_laptop"/>
+        <field name="product_uom_qty">3</field>
+        <field name="product_uom" ref="uom.product_uom_unit"/>
+        <field name="location_id" ref="stock.stock_location_stock"/>
+        <field name="location_dest_id" ref="stock.stock_location_customers"/>
+    </record>
+
+</odoo>
