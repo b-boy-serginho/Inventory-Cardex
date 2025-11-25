@@ -90,27 +90,6 @@
         </field>
     </record>
 
-    <!-- Extender la vista de líneas de movimiento (stock.move.line) -->
-    <record id="view_stock_move_line_tree_inherit_cardex" model="ir.ui.view">
-        <field name="name">stock.move.line.tree.inherit.cardex</field>
-        <field name="model">stock.move.line</field>
-        <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree"/>
-        <field name="arch" type="xml">
-            
-            <!-- Agregar costo en las líneas de movimiento -->
-            <xpath expr="//field[@name='product_id']" position="after">
-                <field name="product_cost" string="Costo" 
-                       widget="monetary"
-                       options="{'currency_field': 'company_currency_id'}"/>
-                <field name="line_cost" string="Costo Total" 
-                       widget="monetary"
-                       options="{'currency_field': 'company_currency_id'}"
-                       optional="hide"/>
-                <field name="company_currency_id" invisible="1"/>
-            </xpath>
-            
-        </field>
-    </record>
 
     <!-- Vista de búsqueda mejorada con filtro por costo -->
     <record id="view_stock_move_search_inherit_cardex" model="ir.ui.view">
@@ -136,5 +115,71 @@
             
         </field>
     </record>
+
+    <!-- Vista de árbol NUEVA para stock.move.line con campos de costo -->
+    <!-- Esta vista NO hereda de ninguna otra para evitar problemas con parent.show_quant -->
+    <record id="view_stock_move_line_cardex_tree" model="ir.ui.view">
+        <field name="name">stock.move.line.cardex.tree</field>
+        <field name="model">stock.move.line</field>
+        <field name="priority">10</field> <!-- Alta prioridad para usar esta vista -->
+        <field name="arch" type="xml">
+            <tree string="Movimientos Detallados (Cardex)" editable="bottom">
+                <!-- Campos técnicos (ocultos por defecto pero disponibles para dominios) -->
+                <field name="product_uom_category_id" optional="hide"/>
+                <field name="company_id" optional="hide"/>
+                <field name="company_currency_id" optional="hide"/>
+                
+                <!-- Campos visibles principales -->
+                <field name="product_id"/>
+                <field name="product_cost" string="Costo Unit." 
+                       widget="monetary"
+                       options="{'currency_field': 'company_currency_id'}"/>
+                <field name="line_cost" string="Costo Total" 
+                       widget="monetary"
+                       options="{'currency_field': 'company_currency_id'}"
+                       optional="hide"/>
+                <field name="quantity" string="Cantidad"/>
+                <field name="product_uom_id" string="UdM" groups="uom.group_uom"/>
+                
+                <!-- Campos opcionales -->
+                <field name="location_id" optional="hide"/>
+                <field name="location_dest_id" optional="hide"/>
+                <field name="lot_id" optional="hide" groups="stock.group_production_lot"/>
+                <field name="package_id" optional="hide" groups="stock.group_tracking_lot"/>
+                <field name="result_package_id" optional="hide" groups="stock.group_tracking_lot"/>
+                <field name="owner_id" optional="hide" groups="stock.group_tracking_owner"/>
+                <field name="reference" optional="hide"/>
+                <field name="date" optional="hide"/>
+                <field name="state" optional="hide"/>
+                <field name="picking_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Acción de ventana para abrir los movimientos detallados con costos -->
+    <record id="action_stock_move_line_cardex" model="ir.actions.act_window">
+        <field name="name">Movimientos Detallados (Cardex)</field>
+        <field name="res_model">stock.move.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_stock_move_line_cardex_tree"/>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay movimientos detallados de stock
+            </p>
+            <p>
+                Aquí puedes ver todos los movimientos de stock a nivel detallado con información de costos.
+            </p>
+        </field>
+    </record>
+
+    <!-- Ítem de menú en Inventario > Reportes -->
+    <menuitem 
+        id="menu_stock_move_line_cardex"
+        name="Movimientos Detallados (Cardex)"
+        parent="stock.menu_warehouse_report"
+        action="action_stock_move_line_cardex"
+        sequence="100"/>
 
 </odoo>
