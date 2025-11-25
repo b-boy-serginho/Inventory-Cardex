@@ -8,7 +8,7 @@
     """,
     'depends': ['stock', 'web'],
     'data': [
-        'views/stock_picking_views.xml',
+        'security/ir.model.access.csv',
         'views/stock_move_views.xml',
         'views/assets.xml',
         'wizard/stock_cost_report_wizard_views.xml',

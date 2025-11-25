@@ -23,12 +23,12 @@
                     <page string="Ayuda">
                         <group>
                             <div class="alert alert-info" role="alert">
-                                <h4>📊 Instrucciones:</h4>
+                                <h4>Instrucciones:</h4>
                                 <ul>
                                     <li><strong>Reporte PDF:</strong> Genera un documento PDF profesional con los datos de costos</li>
-                                    <li><strong>Exportar Excel:</strong> Descarga los datos en formato Excel (.xlsx) para análisis adicional</li>
-                                    <li><strong>Filtros:</strong> Puedes filtrar por productos o ubicaciones específicas</li>
-                                    <li><strong>Costo cero:</strong> Activa la opción para incluir productos sin costo asignado</li>
+                                    <li><strong>Exportar Excel:</strong> Descarga los datos en formato Excel (.xlsx) para analisis adicional</li>
+                                    <li><strong>Filtros:</strong> Puedes filtrar por productos o ubicaciones especificas</li>
+                                    <li><strong>Costo cero:</strong> Activa la opcion para incluir productos sin costo asignado</li>
                                 </ul>
                             </div>
                         </group>
@@ -48,7 +48,7 @@
         </field>
     </record>
 
-    <!-- Acción para abrir el wizard -->
+    <!-- Accion para abrir el wizard -->
     <record id="action_stock_cost_report_wizard" model="ir.actions.act_window">
         <field name="name">Reporte de Costos</field>
         <field name="res_model">stock.cost.report.wizard</field>
@@ -57,7 +57,7 @@
         <field name="binding_model_id" ref="stock.model_stock_move"/>
     </record>
 
-    <!-- Menú para acceder al reporte -->
+    <!-- Menu para acceder al reporte -->
     <menuitem id="menu_stock_cost_report"
               name="Reporte de Costos"
               parent="stock.menu_stock_warehouse_mgmt"
