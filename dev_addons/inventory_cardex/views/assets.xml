@@ -12,4 +12,10 @@
         <field name="bundle">web.assets_backend</field>
         <field name="path">inventory_cardex/static/src/js/stock_move_debug.js</field>
     </record>
+    
+    <record id="inventory_cardex_list_controller_patch" model="ir.asset">
+        <field name="name">Inventory Cardex List Controller Patch</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">inventory_cardex/static/src/js/list_controller_patch.js</field>
+    </record>
 </odoo>

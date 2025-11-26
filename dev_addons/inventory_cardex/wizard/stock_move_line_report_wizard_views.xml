@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de formulario del wizard -->
+    <record id="view_stock_move_line_report_wizard_form" model="ir.ui.view">
+        <field name="name">stock.move.line.report.wizard.form</field>
+        <field name="model">stock.move.line.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reporte de Movimientos Detallados (Cardex)">
+                <group>
+                    <group string="Filtros de Fecha">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group string="Filtros de Ubicación">
+                        <field name="location_id"/>
+                        <field name="location_dest_id"/>
+                    </group>
+                </group>
+                
+                <group>
+                    <group string="Filtros de Producto y Estado">
+                        <field name="product_ids" widget="many2many_tags"/>
+                        <field name="state"/>
+                    </group>
+                    <group string="Otros Filtros">
+                        <field name="picking_id"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </group>
+                
+                <footer>
+                    <button string="Generar PDF" name="action_generate_pdf" 
+                            type="object" class="btn-primary" icon="fa-file-pdf-o"/>
+                    <button string="Generar Excel" name="action_generate_excel" 
+                            type="object" class="btn-success" icon="fa-file-excel-o"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción del wizard -->
+    <record id="action_stock_move_line_report_wizard" model="ir.actions.act_window">
+        <field name="name">Reporte Cardex Detallado</field>
+        <field name="res_model">stock.move.line.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="stock.model_stock_move_line"/>
+    </record>
+
+    <!-- Menú para abrir el wizard -->
+    <menuitem 
+        id="menu_stock_move_line_report_wizard"
+        name="Reporte Cardex con Filtros"
+        parent="stock.menu_warehouse_report"
+        action="action_stock_move_line_report_wizard"
+        sequence="101"/>
+</odoo>
