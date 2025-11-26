@@ -9,182 +9,137 @@
         <field name="report_file">inventory_cardex.report_stock_move_line_cardex_document</field>
         <field name="binding_model_id" ref="stock.model_stock_move_line"/>
         <field name="binding_type">report</field>
-        <field name="print_report_name">'Cardex_Detallado_%s' % (object.product_id.name)</field>
+        <field name="print_report_name">'Cardex_Valorizado_%s' % (object.product_id.name)</field>
     </record>
 
-    <!-- Template principal para reporte (dinámico basado en columnas visibles) -->
+    <!-- Template principal para reporte estilo Cardex Valorizado -->
     <template id="report_stock_move_line_cardex_document">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <div class="page">
-                    <h2>Reporte de Movimientos Detallados (Cardex)</h2>
+                    <!-- Título principal -->
+                    <h2 style="text-align: center; margin-bottom: 5px;">DETALLE DEL INVENTARIO VALORIZADO</h2>
                     
-                    <p class="text-muted">
-                        Generado el <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M')"/>
-                    </p>
+                    <!-- Información del producto (tomamos el primer registro como referencia) -->
+                    <t t-if="docs">
+                        <table style="width: 100%; margin-bottom: 15px; border: none;">
+                            <tr>
+                                <td style="border: none; padding: 5px;">
+                                    <strong>Producto:</strong> <span t-field="docs[0].product_id"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: none; padding: 5px;">
+                                    <strong>Unidad de medida:</strong> <span t-field="docs[0].product_uom_id"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </t>
 
-                    <p>
-                        <strong>Registros seleccionados:</strong> <span t-esc="len(docs)"/>
-                    </p>
-
-                    <!-- Determinar si hay campos visibles en data -->
-                    <t t-set="visible_fields" t-value="data.get('visible_fields', []) if data else []"/>
-                    <t t-set="has_visible_fields" t-value="len(visible_fields) > 0"/>
-
-                    <table class="table table-sm table-bordered o_report_layout_table">
+                    <table class="table table-sm table-bordered o_report_layout_table" style="width: 100%;">
                         <thead>
-                            <tr style="background-color: #875A7B; color: white;">
-                                <!-- Si hay campos visibles, mostrar solo esos -->
-                                <t t-if="has_visible_fields">
-                                    <t t-foreach="visible_fields" t-as="field">
-                                        <th t-att-class="'text-right' if field.get('technical_name') in ['product_cost', 'line_cost', 'quantity'] else ''">
-                                            <span t-esc="field.get('label')"/>
-                                        </th>
-                                    </t>
-                                </t>
-                                <!-- Si no, mostrar todos los campos (comportamiento por defecto) -->
-                                <t t-else="">
-                                    <th>Producto</th>
-                                    <th class="text-right">Costo Unit.</th>
-                                    <th class="text-right">Costo Total</th>
-                                    <th class="text-right">Cantidad</th>
-                                    <th>UdM</th>
-                                    <th>Ubicación Origen</th>
-                                    <th>Ubicación Destino</th>
-                                    <th>Estado</th>
-                                    <th>Fecha</th>
-                                </t>
+                            <tr style="background-color: #7b68ab; color: white; font-weight: bold;">
+                                <th>Fecha</th>
+                                <th>Referencia</th>
+                                <th>Desde</th>
+                                <th>A</th>
+                                <th style="text-align: center;">Cantidad Entrante</th>
+                                <th style="text-align: center;">Cantidad Saliente</th>
+                                <th class="text-right">Cantidad Total</th>
+                                <th class="text-right">Costo Total</th>
+                                <!-- <th>Estado</th> -->
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-set="total_cost" t-value="0.0"/>
+                            <t t-set="total_incoming" t-value="0.0"/>
+                            <t t-set="total_outgoing" t-value="0.0"/>
                             <t t-set="total_quantity" t-value="0.0"/>
+                            <t t-set="total_cost" t-value="0.0"/>
                             
                             <t t-foreach="docs" t-as="o">
                                 <tr>
-                                    <!-- Si hay campos visibles, mostrar solo esos -->
-                                    <t t-if="has_visible_fields">
-                                        <t t-foreach="visible_fields" t-as="field">
-                                            <t t-set="field_name" t-value="field.get('technical_name')"/>
-                                            <td t-att-class="'text-right' if field_name in ['product_cost', 'line_cost', 'quantity'] else ''">
-                                                <t t-if="field_name == 'product_cost'">
-                                                    <span t-field="o.product_cost" 
-                                                          t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
-                                                </t>
-                                                <t t-elif="field_name == 'line_cost'">
-                                                    <span t-field="o.line_cost" 
-                                                          t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
-                                                </t>
-                                                <t t-elif="field_name == 'quantity'">
-                                                    <span t-field="o.quantity" t-options="{'widget': 'float', 'precision': 2}"/>
-                                                </t>
-                                                <t t-elif="field_name == 'date'">
-                                                    <span t-field="o.date" t-options="{'widget': 'datetime'}"/>
-                                                </t>
-                                                <t t-elif="field_name == 'state'">
-                                                    <t t-if="o.state == 'draft'">Borrador</t>
-                                                    <t t-elif="o.state == 'waiting'">Esperando</t>
-                                                    <t t-elif="o.state == 'confirmed'">Confirmado</t>
-                                                    <t t-elif="o.state == 'assigned'">Disponible</t>
-                                                    <t t-elif="o.state == 'done'">Hecho</t>
-                                                    <t t-elif="o.state == 'cancel'">Cancelado</t>
-                                                    <t t-else=""><span t-field="o.state"/></t>
-                                                </t>
-                                                <t t-else="">
-                                                    <span t-esc="o[field_name]"/>
-                                                </t>
-                                            </td>
-                                        </t>
-                                    </t>
-                                    <!-- Si no, mostrar todos los campos (comportamiento por defecto) -->
-                                    <t t-else="">
-                                        <td><span t-field="o.product_id"/></td>
-                                        <td class="text-right">
-                                            <span t-field="o.product_cost" 
-                                                  t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
-                                        </td>
-                                        <td class="text-right">
-                                            <span t-field="o.line_cost" 
-                                                  t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
-                                        </td>
-                                        <td class="text-right">
-                                            <span t-field="o.quantity" t-options="{'widget': 'float', 'precision': 2}"/>
-                                        </td>
-                                        <td><span t-field="o.product_uom_id"/></td>
-                                        <td><span t-field="o.location_id"/></td>
-                                        <td><span t-field="o.location_dest_id"/></td>
-                                        <td>
-                                            <t t-if="o.state == 'draft'">Borrador</t>
-                                            <t t-elif="o.state == 'waiting'">Esperando</t>
-                                            <t t-elif="o.state == 'confirmed'">Confirmado</t>
-                                            <t t-elif="o.state == 'assigned'">Disponible</t>
-                                            <t t-elif="o.state == 'done'">Hecho</t>
-                                            <t t-elif="o.state == 'cancel'">Cancelado</t>
-                                            <t t-else=""><span t-field="o.state"/></t>
-                                        </td>
-                                        <td><span t-field="o.date" t-options="{'widget': 'datetime'}"/></td>
-                                    </t>
+                                    <!-- Fecha -->
+                                    <td><span t-field="o.date" t-options="{'widget': 'datetime'}"/></td>
+                                    
+                                    <!-- Referencia -->
+                                    <td><span t-esc="o.reference or ''"/></td>
+                                    
+                                    <!-- Desde -->
+                                    <td><span t-field="o.location_id"/></td>
+                                    
+                                    <!-- A -->
+                                    <td><span t-field="o.location_dest_id"/></td>
+                                    
+                                    <!-- Cantidad Entrante (rojo) -->
+                                    <td style="text-align: center; color: #00b050; font-weight: bold;">
+                                        <span t-esc="int(o.incoming_qty or 0)"/>
+                                    </td>
+                                    
+                                    <!-- Cantidad Saliente (verde) -->
+                                    <td style="text-align: center; color: #ff0000; font-weight: bold;">
+                                        <span t-esc="int(o.outgoing_qty or 0)"/>
+                                    </td>
+                                    
+                                    <!-- Cantidad Total -->
+                                    <td class="text-right">
+                                        <span t-field="o.quantity" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    
+                                    <!-- Costo Total -->
+                                    <td class="text-right">
+                                        <span t-field="o.line_cost" 
+                                              t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
+                                    </td>
+                                    
+                                    <!-- Estado -->
+                                    <!-- <td>
+                                        <t t-if="o.state == 'draft'">Borrador</t>
+                                        <t t-elif="o.state == 'waiting'">Esperando</t>
+                                        <t t-elif="o.state == 'confirmed'">Confirmado</t>
+                                        <t t-elif="o.state == 'assigned'">Disponible</t>
+                                        <t t-elif="o.state == 'done'">done</t>
+                                        <t t-elif="o.state == 'cancel'">Cancelado</t>
+                                        <t t-else=""><span t-field="o.state"/></t>
+                                    </td> -->
                                 </tr>
                                 
-                                <t t-set="total_cost" t-value="total_cost + (o.line_cost or 0.0)"/>
+                                <!-- Acumular totales -->
+                                <t t-set="total_incoming" t-value="total_incoming + (o.incoming_qty or 0.0)"/>
+                                <t t-set="total_outgoing" t-value="total_outgoing + (o.outgoing_qty or 0.0)"/>
                                 <t t-set="total_quantity" t-value="total_quantity + (o.quantity or 0.0)"/>
+                                <t t-set="total_cost" t-value="total_cost + (o.line_cost or 0.0)"/>
                             </t>
                         </tbody>
-                        <tfoot t-if="not has_visible_fields or 'line_cost' in [f.get('technical_name') for f in visible_fields] or 'quantity' in [f.get('technical_name') for f in visible_fields]">
+                        
+                        <!-- Fila de TOTALES -->
+                        <tfoot>
                             <tr style="background-color: #f0f0f0; font-weight: bold;">
-                                <t t-set="cost_col_index" t-value="0"/>
-                                <t t-set="qty_col_index" t-value="0"/>
+                                <td colspan="4" class="text-right">TOTALES</td>
                                 
-                                <t t-if="has_visible_fields">
-                                    <!-- Calcular índices de columnas para totales -->
-                                    <t t-foreach="visible_fields" t-as="field">
-                                        <t t-if="field.get('technical_name') == 'line_cost'">
-                                            <t t-set="cost_col_index" t-value="field_index + 1"/>
-                                        </t>
-                                        <t t-if="field.get('technical_name') == 'quantity'">
-                                            <t t-set="qty_col_index" t-value="field_index + 1"/>
-                                        </t>
-                                    </t>
-                                    
-                                    <td t-att-colspan="max(1, (cost_col_index or qty_col_index or 1) - 1)" class="text-right">TOTALES:</td>
-                                    <t t-if="cost_col_index > 0">
-                                        <td class="text-right">
-                                            <span t-esc="'${:,.2f}'.format(total_cost)"/>
-                                        </td>
-                                    </t>
-                                    <t t-if="qty_col_index > 0 and qty_col_index != cost_col_index">
-                                        <td class="text-right">
-                                            <span t-esc="'{:,.2f}'.format(total_quantity)"/>
-                                        </td>
-                                    </t>
-                                    <td t-att-colspan="len(visible_fields) - max(cost_col_index or 0, qty_col_index or 0)"></td>
-                                </t>
-                                <t t-else="">
-                                    <td colspan="2" class="text-right">TOTALES:</td>
-                                    <td class="text-right">
-                                        <span t-esc="'${:,.2f}'.format(total_cost)"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-esc="'{:,.2f}'.format(total_quantity)"/>
-                                    </td>
-                                    <td colspan="5"></td>
-                                </t>
+                                <!-- Total Entrante (rojo) -->
+                                <td style="text-align: center; color: #00b050; font-weight: bold;">
+                                    <span t-esc="int(total_incoming)"/>
+                                </td>
+                                
+                                <!-- Total Saliente (verde) -->
+                                <td style="text-align: center; color: #ff0000; font-weight: bold;">
+                                    <span t-esc="int(total_outgoing)"/>
+                                </td>
+                                
+                                <!-- Total Cantidad -->
+                                <td class="text-right">
+                                    <span t-esc="int(total_quantity)"/>
+                                </td>
+                                
+                                <!-- Total Costo -->
+                                <td class="text-right">
+                                    <span t-esc="'{:,.2f}'.format(total_cost)"/>
+                                </td>
+                                
+                                <td></td>
                             </tr>
                         </tfoot>
                     </table>
-                    
-                    <div class="row mt-4" t-if="len(docs) > 5">
-                        <div class="col-12">
-                            <p class="text-muted">
-                                <small>
-                                    <strong>Resumen:</strong> 
-                                    Este reporte contiene <span t-esc="len(docs)"/> movimientos detallados de inventario
-                                    con un costo total de 
-                                    <span t-esc="'${:,.2f}'.format(total_cost)"/>.
-                                </small>
-                            </p>
-                        </div>
-                    </div>
                 </div>
             </t>
         </t>

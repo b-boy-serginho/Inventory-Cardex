@@ -15,19 +15,22 @@ class StockMoveLine(models.Model):
         """
         records = self.browse(record_ids)
         
-        # Mapeo de nombres técnicos a nombres legibles
+        # Mapeo de nombres técnicos a nombres legibles (en el orden deseado)
         field_labels = {
-            'product_id': 'Producto',
-            'product_cost': 'Costo Unit.',
-            'line_cost': 'Costo Total',
-            'quantity': 'Cantidad',
-            'product_uom_id': 'UdM',
+            'date': 'Fecha',
+            'reference': 'Referencia',
             'location_id': 'Desde',
             'location_dest_id': 'A',
-            'lot_id': 'Número de serie/lote (lot_id)',
-            'reference': 'Referencia',
-            'date': 'Fecha',
+            'product_id': 'Producto',
+            'quantity': 'Cantidad',
+            'product_cost': 'Costo Unitario',
+            'line_cost': 'Costo Total',
             'state': 'Estado',
+            # Campos opcionales
+            'product_uom_id': 'UdM',
+            'incoming_qty': 'Qty Entrante',
+            'outgoing_qty': 'Qty Saliente',
+            'lot_id': 'Número de serie/lote',
             'picking_id': 'Transferir',
             'package_id': 'Paquete Origen',
             'result_package_id': 'Paquete Destino',
