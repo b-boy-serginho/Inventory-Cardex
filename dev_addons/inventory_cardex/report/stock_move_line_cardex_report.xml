@@ -46,6 +46,7 @@
                                 <th style="text-align: center;">Cantidad Entrante</th>
                                 <th style="text-align: center;">Cantidad Saliente</th>
                                 <th class="text-right">Cantidad Total</th>
+                                <th class="text-right">Costo Unitario</th>
                                 <th class="text-right">Costo Total</th>
                                 <!-- <th>Estado</th> -->
                             </tr>
@@ -83,6 +84,12 @@
                                     <!-- Cantidad Total -->
                                     <td class="text-right">
                                         <span t-field="o.quantity" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+
+                                    <!-- Costo Unitario -->
+                                    <td class="text-right">
+                                        <span t-field="o.unit_cost" 
+                                              t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
                                     </td>
                                     
                                     <!-- Costo Total -->

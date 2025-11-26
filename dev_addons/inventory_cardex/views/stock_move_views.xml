@@ -146,8 +146,8 @@
                 
                 <!-- Campos opcionales (ocultos por defecto) -->
                 <field name="product_uom_id" string="UdM" groups="uom.group_uom" optional="hide"/>
-                <field name="incoming_qty" string="Qty Entrante" class="text-success fw-bold" optional="hide"/>
-                <field name="outgoing_qty" string="Qty Saliente" class="text-danger fw-bold" optional="hide"/>
+                <field name="incoming_qty" string="Qty Entrante" optional="hide"/>
+                <field name="outgoing_qty" string="Qty Saliente" optional="hide"/>
                 <field name="lot_id" optional="hide" groups="stock.group_production_lot"/>
                 <field name="package_id" optional="hide" groups="stock.group_tracking_lot"/>
                 <field name="result_package_id" optional="hide" groups="stock.group_tracking_lot"/>
