@@ -1,0 +1,28 @@
+/* Estilos personalizados para campos de cantidad entrante y saliente */
+
+/* Color verde para campos de cantidad entrante */
+.o_data_row .o_data_cell[name="incoming_qty"] {
+    color: #00b050 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+}
+
+/* Color rojo para campos de cantidad saliente */
+.o_data_row .o_data_cell[name="outgoing_qty"] {
+    color: #ff0000 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+}
+
+/* También aplicar a campos en modo edición */
+.o_data_row input[name="incoming_qty"],
+.o_data_row .o_field_widget[name="incoming_qty"] {
+    color: #00b050 !important;
+    font-weight: bold !important;
+}
+
+.o_data_row input[name="outgoing_qty"],
+.o_data_row .o_field_widget[name="outgoing_qty"] {
+    color: #ff0000 !important;
+    font-weight: bold !important;
+}

@@ -18,4 +18,10 @@
         <field name="bundle">web.assets_backend</field>
         <field name="path">inventory_cardex/static/src/js/list_controller_patch.js</field>
     </record>
+    
+    <record id="inventory_cardex_colored_fields_css" model="ir.asset">
+        <field name="name">Inventory Cardex Colored Fields CSS</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">inventory_cardex/static/src/css/colored_fields.css</field>
+    </record>
 </odoo>

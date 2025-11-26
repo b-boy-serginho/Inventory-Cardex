@@ -123,9 +123,7 @@
         <field name="model">stock.move.line</field>
         <field name="priority">10</field> <!-- Alta prioridad para usar esta vista -->
         <field name="arch" type="xml">
-            <tree string="Movimientos Detallados (Cardex)" editable="bottom"
-                  decoration-success="incoming_qty > 0"
-                  decoration-danger="outgoing_qty > 0">
+            <tree string="Movimientos Detallados (Cardex)" editable="bottom">
                 <!-- Campos técnicos (ocultos por defecto pero disponibles para dominios) -->
                 <field name="product_uom_category_id" optional="hide"/>
                 <field name="company_id" optional="hide"/>
@@ -148,8 +146,8 @@
                 
                 <!-- Campos opcionales (ocultos por defecto) -->
                 <field name="product_uom_id" string="UdM" groups="uom.group_uom" optional="hide"/>
-                <field name="incoming_qty" string="Qty Entrante" optional="hide"/>
-                <field name="outgoing_qty" string="Qty Saliente" optional="hide"/>
+                <field name="incoming_qty" string="Qty Entrante" class="text-success fw-bold" optional="hide"/>
+                <field name="outgoing_qty" string="Qty Saliente" class="text-danger fw-bold" optional="hide"/>
                 <field name="lot_id" optional="hide" groups="stock.group_production_lot"/>
                 <field name="package_id" optional="hide" groups="stock.group_tracking_lot"/>
                 <field name="result_package_id" optional="hide" groups="stock.group_tracking_lot"/>
