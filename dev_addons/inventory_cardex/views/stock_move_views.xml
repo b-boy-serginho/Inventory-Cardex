@@ -130,48 +130,14 @@
                 <field name="company_currency_id" optional="hide"/>
                 <field name="sale_currency_id" optional="hide"/>
                 <field name="purchase_currency_id" optional="hide"/>
-                
+
                 <!-- ========== CAMPOS DE INVENTARIO ========== -->
-                <!-- Orden de campos según lo solicitado -->
                 <field name="date" string="Fecha"/>
                 <field name="reference" string="Referencia"/>
-                <field name="location_id" string="Desde"/>
-                <field name="location_dest_id" string="A"/>
-                <field name="product_id" string="Producto"/>
-                <field name="quantity" string="Cantidad"/>
-                <field name="product_cost" string="Costo Unitario" 
-                       widget="monetary"
-                       options="{'currency_field': 'company_currency_id'}"/>
-                <field name="line_cost" string="Costo Total" 
-                       widget="monetary"
-                       options="{'currency_field': 'company_currency_id'}"/>
-                <field name="state" string="Estado"/>
-                
-                <!-- ========== CAMPOS DE VENTA (sale_order_line) ========== -->
-                <field name="has_sale" string="Tiene Venta" optional="hide"/>
-                <field name="sale_order_id" string="Pedido Venta" optional="hide"/>
-                <field name="sale_product_name" string="Descripción Venta" optional="hide"/>
-                <field name="sale_product_uom_qty" string="Cantidad Vendida" optional="hide"/>
-                <field name="sale_price_unit" string="Precio Unit. Venta" 
-                       widget="monetary"
-                       options="{'currency_field': 'sale_currency_id'}"
-                       optional="hide"/>
-                <field name="sale_price_subtotal" string="Subtotal Venta" 
-                       widget="monetary"
-                       options="{'currency_field': 'sale_currency_id'}"
-                       optional="hide"/>
-                <field name="sale_price_tax" string="Impuestos Venta" 
-                       widget="monetary"
-                       options="{'currency_field': 'sale_currency_id'}"
-                       optional="hide"/>
-                <field name="sale_price_total" string="Total Venta" 
-                       widget="monetary"
-                       options="{'currency_field': 'sale_currency_id'}"
-                       optional="hide"/>
-                <field name="sale_state" string="Estado Venta" optional="hide"/>
-                
-                <!-- ========== CAMPOS DE COMPRA (purchase_order_line) ========== -->
+
+                 <!-- ========== CAMPOS DE COMPRA (purchase_order_line) ========== -->
                 <field name="has_purchase" string="Tiene Compra" optional="hide"/>
+                <field name="has_purchase_qty" optional="hide" invisible="1"/>
                 <field name="purchase_order_id" string="Pedido Compra" optional="hide"/>
                 <field name="purchase_product_name" string="Descripción Compra" optional="hide"/>
                 <field name="purchase_product_qty" string="Cantidad Comprada" optional="hide"/>
@@ -191,7 +157,47 @@
                        widget="monetary"
                        options="{'currency_field': 'purchase_currency_id'}"
                        optional="hide"/>
-                <field name="purchase_state" string="Estado Compra" optional="hide" readonly="1"/>
+                <field name="purchase_state" string="Estado Compra" 
+                       optional="hide" 
+                       readonly="1"/>
+
+                 <!-- ========== CAMPOS DE VENTA (sale_order_line) ========== -->
+                <field name="has_sale" string="Tiene Venta" optional="hide"/>
+                <field name="has_sale_qty" optional="hide" invisible="1"/>
+                <field name="sale_order_id" string="Pedido Venta" optional="hide"/>
+                <field name="sale_product_name" string="Descripción Venta" optional="hide"/>
+                <field name="sale_product_uom_qty" string="Cantidad Vendida" optional="hide"/>
+                <field name="sale_price_unit" string="Precio Unit. Venta" 
+                       widget="monetary"
+                       options="{'currency_field': 'sale_currency_id'}"
+                       optional="hide"/>
+                <field name="sale_price_subtotal" string="Subtotal Venta" 
+                       widget="monetary"
+                       options="{'currency_field': 'sale_currency_id'}"
+                       optional="hide"/>
+                <field name="sale_price_tax" string="Impuestos Venta" 
+                       widget="monetary"
+                       options="{'currency_field': 'sale_currency_id'}"
+                       optional="hide"/>
+                <field name="sale_price_total" string="Total Venta" 
+                       widget="monetary"
+                       options="{'currency_field': 'sale_currency_id'}"
+                       optional="hide"/>
+                <field name="sale_state" string="Estado Venta" optional="hide"/>               
+                            
+                <!-- ========== CAMPOS DE INVENTARIO ========== -->
+                <!-- Orden de campos según lo solicitado -->                              
+                <field name="location_id" optional="hide"/>
+                <field name="location_dest_id" optional="hide"/>
+                <field name="product_id" string="Producto"/>
+                <field name="quantity" string="Cantidad"/>
+                <field name="product_cost" string="Costo Unitario" 
+                       widget="monetary"
+                       options="{'currency_field': 'company_currency_id'}"/>
+                <field name="line_cost" string="Costo Total" 
+                       widget="monetary"
+                       options="{'currency_field': 'company_currency_id'}"/>
+                <field name="state" string="Estado"/>                         
                 
                 <!-- ========== CAMPOS OPCIONALES DE INVENTARIO ========== -->
                 <field name="product_uom_id" string="UdM" groups="uom.group_uom" optional="hide"/>

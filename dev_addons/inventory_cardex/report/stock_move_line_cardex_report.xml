@@ -182,7 +182,7 @@
                                 </td>
                                 
                                 <!-- TOTALES COMPRA - CANTIDAD -->
-                                <td style="border: 1px solid black; padding: 5px; text-align: center; color: #00b050;">
+                                <td style="border: 1px solid black; padding: 5px; text-align: center; color:rgb(0, 0, 0);">
                                     <span t-esc="int(total_purchase_qty)"/>
                                 </td>
                                 
@@ -190,12 +190,12 @@
                                 <td style="border: 1px solid black; padding: 5px;"></td>
                                 
                                 <!-- TOTALES COMPRA - SUBTOTAL -->
-                                <td style="border: 1px solid black; padding: 5px; text-align: center; color: #00b050;">
+                                <td style="border: 1px solid black; padding: 5px; text-align: center; color:rgb(0, 0, 0);">
                                     <span t-esc="'{:,.2f}'.format(total_purchase_subtotal)"/>
                                 </td>
                                 
                                 <!-- TOTALES VENTA - CANTIDAD -->
-                                <td style="border: 1px solid black; padding: 5px; text-align: center; color: #ff0000;">
+                                <td style="border: 1px solid black; padding: 5px; text-align: center; color:rgb(0, 0, 0);">
                                     <span t-esc="int(total_sale_qty)"/>
                                 </td>
                                 
@@ -203,7 +203,7 @@
                                 <td style="border: 1px solid black; padding: 5px;"></td>
                                 
                                 <!-- TOTALES VENTA - SUBTOTAL -->
-                                <td style="border: 1px solid black; padding: 5px; text-align: center; color: #ff0000;">
+                                <td style="border: 1px solid black; padding: 5px; text-align: center; color:rgb(0, 0, 0);">
                                     <span t-esc="'{:,.2f}'.format(total_sale_subtotal)"/>
                                 </td>
                                 

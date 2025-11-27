@@ -89,10 +89,19 @@ class StockMoveLine(models.Model):
     sale_currency_id = fields.Many2one(
         'res.currency',
         string='Moneda Venta',
-        related='sale_line_id.currency_id',
+        compute='_compute_sale_currency_id',
         readonly=True,
+        store=False,
         help="Moneda del pedido de venta"
     )
+    
+    @api.depends('sale_line_id', 'sale_line_id.currency_id')
+    def _compute_sale_currency_id(self):
+        for line in self:
+            if line.sale_line_id and line.sale_line_id.currency_id:
+                line.sale_currency_id = line.sale_line_id.currency_id
+            else:
+                line.sale_currency_id = False
     
     sale_state = fields.Char(
         string='Estado Venta',
@@ -118,7 +127,27 @@ class StockMoveLine(models.Model):
         help="Indica si este movimiento está relacionado con un pedido de venta"
     )
     
+    # Campo para saber si tiene venta con cantidad > 0 (para decoraciones)
+    has_sale_qty = fields.Boolean(
+        string='Tiene Venta con Cantidad',
+        compute='_compute_has_sale_qty',
+        store=False,
+        help="Indica si este movimiento tiene venta con cantidad mayor a 0"
+    )
+    
     @api.depends('sale_line_id')
     def _compute_has_sale(self):
         for line in self:
             line.has_sale = bool(line.sale_line_id)
+    
+    @api.depends('sale_line_id', 'sale_product_uom_qty')
+    def _compute_has_sale_qty(self):
+        for line in self:
+            if not line.sale_line_id:
+                line.has_sale_qty = False
+            else:
+                try:
+                    qty = getattr(line, 'sale_product_uom_qty', None) or 0.0
+                    line.has_sale_qty = float(qty) > 0
+                except (AttributeError, TypeError, ValueError):
+                    line.has_sale_qty = False

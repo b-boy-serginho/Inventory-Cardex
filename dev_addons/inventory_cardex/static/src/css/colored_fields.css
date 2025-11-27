@@ -5,3 +5,57 @@
 .o_data_row .o_data_cell[name="outgoing_qty"] {
     text-align: center !important;
 }
+
+/* ========== CAMPOS DE COMPRA - COLOR VERDE (#00b050) ========== */
+/* Solo aplicar cuando tienen decoración-success (purchase_product_qty > 0) */
+.o_list_table .o_data_row .o_data_cell[name="purchase_product_qty"].text-success,
+.o_list_table .o_data_row .o_data_cell[name="purchase_price_unit"].text-success,
+.o_list_table .o_data_row .o_data_cell[name="purchase_price_subtotal"].text-success,
+.o_list_table .o_data_row .o_data_cell[name="purchase_price_tax"].text-success,
+.o_list_table .o_data_row .o_data_cell[name="purchase_price_total"].text-success,
+.o_list_table .o_data_row .o_data_cell[name="purchase_order_id"].text-success,
+.o_list_table .o_data_row .o_data_cell[name="purchase_product_name"].text-success,
+.o_list_table .o_data_row .o_data_cell[name="purchase_state"].text-success {
+    color: #00b050 !important;
+    font-weight: bold !important;
+}
+
+/* Valores dentro de los campos de compra con decoración */
+.o_list_table .o_data_row .o_data_cell[name="purchase_product_qty"].text-success *,
+.o_list_table .o_data_row .o_data_cell[name="purchase_price_unit"].text-success *,
+.o_list_table .o_data_row .o_data_cell[name="purchase_price_subtotal"].text-success *,
+.o_list_table .o_data_row .o_data_cell[name="purchase_price_tax"].text-success *,
+.o_list_table .o_data_row .o_data_cell[name="purchase_price_total"].text-success *,
+.o_list_table .o_data_row .o_data_cell[name="purchase_order_id"].text-success *,
+.o_list_table .o_data_row .o_data_cell[name="purchase_product_name"].text-success *,
+.o_list_table .o_data_row .o_data_cell[name="purchase_state"].text-success * {
+    color: #00b050 !important;
+    font-weight: bold !important;
+}
+
+/* ========== CAMPOS DE VENTA - COLOR ROJO (#ff0000) ========== */
+/* Solo aplicar cuando tienen decoración-danger (sale_product_uom_qty > 0) */
+.o_list_table .o_data_row .o_data_cell[name="sale_product_uom_qty"].text-danger,
+.o_list_table .o_data_row .o_data_cell[name="sale_price_unit"].text-danger,
+.o_list_table .o_data_row .o_data_cell[name="sale_price_subtotal"].text-danger,
+.o_list_table .o_data_row .o_data_cell[name="sale_price_tax"].text-danger,
+.o_list_table .o_data_row .o_data_cell[name="sale_price_total"].text-danger,
+.o_list_table .o_data_row .o_data_cell[name="sale_order_id"].text-danger,
+.o_list_table .o_data_row .o_data_cell[name="sale_product_name"].text-danger,
+.o_list_table .o_data_row .o_data_cell[name="sale_state"].text-danger {
+    color: #ff0000 !important;
+    font-weight: bold !important;
+}
+
+/* Valores dentro de los campos de venta con decoración */
+.o_list_table .o_data_row .o_data_cell[name="sale_product_uom_qty"].text-danger *,
+.o_list_table .o_data_row .o_data_cell[name="sale_price_unit"].text-danger *,
+.o_list_table .o_data_row .o_data_cell[name="sale_price_subtotal"].text-danger *,
+.o_list_table .o_data_row .o_data_cell[name="sale_price_tax"].text-danger *,
+.o_list_table .o_data_row .o_data_cell[name="sale_price_total"].text-danger *,
+.o_list_table .o_data_row .o_data_cell[name="sale_order_id"].text-danger *,
+.o_list_table .o_data_row .o_data_cell[name="sale_product_name"].text-danger *,
+.o_list_table .o_data_row .o_data_cell[name="sale_state"].text-danger * {
+    color: #ff0000 !important;
+    font-weight: bold !important;
+}

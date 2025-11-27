@@ -74,10 +74,19 @@ class StockMoveLine(models.Model):
     purchase_currency_id = fields.Many2one(
         'res.currency',
         string='Moneda Compra',
-        related='purchase_line_id.currency_id',
+        compute='_compute_purchase_currency_id',
         readonly=True,
+        store=False,
         help="Moneda del pedido de compra"
     )
+    
+    @api.depends('purchase_line_id', 'purchase_line_id.currency_id')
+    def _compute_purchase_currency_id(self):
+        for line in self:
+            if line.purchase_line_id and line.purchase_line_id.currency_id:
+                line.purchase_currency_id = line.purchase_line_id.currency_id
+            else:
+                line.purchase_currency_id = False
     
     purchase_state = fields.Char(
         string='Estado Compra',
@@ -103,8 +112,28 @@ class StockMoveLine(models.Model):
         help="Indica si este movimiento está relacionado con un pedido de compra"
     )
     
+    # Campo para saber si tiene compra con cantidad > 0 (para decoraciones)
+    has_purchase_qty = fields.Boolean(
+        string='Tiene Compra con Cantidad',
+        compute='_compute_has_purchase_qty',
+        store=False,
+        help="Indica si este movimiento tiene compra con cantidad mayor a 0"
+    )
+    
     @api.depends('purchase_line_id')
     def _compute_has_purchase(self):
         for line in self:
             line.has_purchase = bool(line.purchase_line_id)
+    
+    @api.depends('purchase_line_id', 'purchase_product_qty')
+    def _compute_has_purchase_qty(self):
+        for line in self:
+            if not line.purchase_line_id:
+                line.has_purchase_qty = False
+            else:
+                try:
+                    qty = getattr(line, 'purchase_product_qty', None) or 0.0
+                    line.has_purchase_qty = float(qty) > 0
+                except (AttributeError, TypeError, ValueError):
+                    line.has_purchase_qty = False
 
