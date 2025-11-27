@@ -126,10 +126,33 @@ SELECT id, product_cost, quantity,
        (product_cost * quantity) as line_cost_calculado
 FROM stock_move_line
 WHERE product_cost IS NOT NULL
+LIMIT 10;
 
 view_stock_cost_report_wizard_form
 stock.cost.report.wizard.form
-LIMIT 10;
+
+stock.move
+
+//EN ESTAS VISTAS SE MUESTRA
+stock.move.tree
+stock.move.tree.inherit.cardex
+stock.move.tree2
+
+//AQUI TENGO QUE LLEGAR
+stock.move.line.tree
+
+// PARA LA VENTA
+select product_id, name, product_uom, product_uom_qty, price_unit, price_subtotal, price_tax, price_total from sale_order_line;
+
+// PARA LA COMPRA 
+select product_id, name, product_uom, product_qty, price_unit, price_subtotal, price_tax, price_total from purchase_order_line; 
+
+// EL JOIN DE COMPRA CON PRODUCTO
+select * from product_product, purchase_order_line where product_product.id=purchase_order_line.product_id;
+
+[FURN_0269] Office Chair Black
+[FURN_6666] Acoustic Bloc Screens
+[E-COM11] Cabinet with Doors
 ------------------------------------------------------------------
 openpg
 openpgwd

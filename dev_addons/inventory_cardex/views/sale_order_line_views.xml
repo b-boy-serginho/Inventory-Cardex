@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de árbol personalizada para sale.order.line -->
+    <record id="view_sale_order_line_cardex_tree" model="ir.ui.view">
+        <field name="name">sale.order.line.cardex.tree</field>
+        <field name="model">sale.order.line</field>
+        <field name="priority">10</field>
+        <field name="arch" type="xml">
+            <tree string="Líneas de Pedido de Venta" create="false" edit="false">
+                <!-- Campos solicitados por el usuario -->
+                <field name="name" string="Descripción"/>
+                <field name="product_uom_qty" string="Cantidad"/>
+                <field name="price_unit" string="Precio Unitario" 
+                       widget="monetary"
+                       options="{'currency_field': 'currency_id'}"/>
+                <field name="price_subtotal" string="Subtotal" 
+                       widget="monetary"
+                       options="{'currency_field': 'currency_id'}"/>
+                <field name="price_tax" string="Impuestos" 
+                       widget="monetary"
+                       options="{'currency_field': 'currency_id'}"/>
+                <field name="price_total" string="Total" 
+                       widget="monetary"
+                       options="{'currency_field': 'currency_id'}"/>
+                
+                <!-- Campos adicionales opcionales (ocultos por defecto) -->
+                <field name="order_id" string="Pedido" optional="show"/>
+                <field name="product_id" string="Producto" optional="show"/>
+                <field name="state" string="Estado" optional="hide"/>
+                <field name="salesman_id" string="Vendedor" optional="hide"/>
+                <field name="product_uom" string="UdM" optional="hide"/>
+                
+                <!-- Campo técnico necesario para el widget monetary -->
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista de formulario para sale.order.line (heredada) -->
+    <record id="view_sale_order_line_cardex_form" model="ir.ui.view">
+        <field name="name">sale.order.line.cardex.form</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="sale.view_order_line_tree"/>
+        <field name="arch" type="xml">
+            <!-- Puedes agregar personalizaciones adicionales aquí si lo necesitas -->
+        </field>
+    </record>
+
+    <!-- Vista de búsqueda para sale.order.line -->
+    <record id="view_sale_order_line_cardex_search" model="ir.ui.view">
+        <field name="name">sale.order.line.cardex.search</field>
+        <field name="model">sale.order.line</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Líneas de Venta">
+                <!-- Campos de búsqueda -->
+                <field name="name" string="Descripción"/>
+                <field name="product_id" string="Producto"/>
+                <field name="order_id" string="Pedido"/>
+                <field name="salesman_id" string="Vendedor"/>
+                
+                <!-- Filtros -->
+                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Pedido de Venta" name="sale" domain="[('state', '=', 'sale')]"/>
+                <filter string="Hecho" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Cancelado" name="cancel" domain="[('state', '=', 'cancel')]"/>
+                
+                <separator/>
+                
+                <!-- Filtros por rango de precio -->
+                <filter string="Precio Alto (>100)" name="high_price" 
+                        domain="[('price_unit', '>', 100)]"/>
+                <filter string="Precio Medio (10-100)" name="medium_price" 
+                        domain="[('price_unit', '>=', 10), ('price_unit', '&lt;=', 100)]"/>
+                <filter string="Precio Bajo (&lt;10)" name="low_price" 
+                        domain="[('price_unit', '&lt;', 10)]"/>
+                
+                <!-- Agrupación -->
+                <group expand="0" string="Agrupar por">
+                    <filter string="Pedido" name="group_by_order" context="{'group_by': 'order_id'}"/>
+                    <filter string="Producto" name="group_by_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="Vendedor" name="group_by_salesman" context="{'group_by': 'salesman_id'}"/>
+                    <filter string="Estado" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción de ventana para abrir las líneas de pedido de venta -->
+    <record id="action_sale_order_line_cardex" model="ir.actions.act_window">
+        <field name="name">Líneas de Pedido de Venta (Cardex)</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_sale_order_line_cardex_tree"/>
+        <field name="search_view_id" ref="view_sale_order_line_cardex_search"/>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay líneas de pedido de venta
+            </p>
+            <p>
+                Aquí puedes ver todas las líneas de pedidos de venta con información detallada de precios e impuestos.
+            </p>
+        </field>
+    </record>
+
+    <!-- Ítem de menú en Ventas > Reportes -->
+    <menuitem 
+        id="menu_sale_order_line_cardex"
+        name="Líneas de Pedido (Cardex)"
+        parent="sale.sale_order_menu"
+        action="action_sale_order_line_cardex"
+        sequence="100"/>
+</odoo>

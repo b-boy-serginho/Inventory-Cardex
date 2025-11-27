@@ -17,6 +17,7 @@ class StockMoveLine(models.Model):
         
         # Mapeo de nombres técnicos a nombres legibles (en el orden deseado)
         field_labels = {
+            # Campos de inventario
             'date': 'Fecha',
             'reference': 'Referencia',
             'location_id': 'Desde',
@@ -26,7 +27,30 @@ class StockMoveLine(models.Model):
             'product_cost': 'Costo Unitario',
             'line_cost': 'Costo Total',
             'state': 'Estado',
-            # Campos opcionales
+            
+            # Campos de venta (sale_order_line)
+            'has_sale': 'Tiene Venta',
+            'sale_order_id': 'Pedido Venta',
+            'sale_product_name': 'Descripción Venta',
+            'sale_product_uom_qty': 'Cantidad Vendida',
+            'sale_price_unit': 'Precio Unit. Venta',
+            'sale_price_subtotal': 'Subtotal Venta',
+            'sale_price_tax': 'Impuestos Venta',
+            'sale_price_total': 'Total Venta',
+            'sale_state': 'Estado Venta',
+            
+            # Campos de compra (purchase_order_line)
+            'has_purchase': 'Tiene Compra',
+            'purchase_order_id': 'Pedido Compra',
+            'purchase_product_name': 'Descripción Compra',
+            'purchase_product_qty': 'Cantidad Comprada',
+            'purchase_price_unit': 'Precio Unit. Compra',
+            'purchase_price_subtotal': 'Subtotal Compra',
+            'purchase_price_tax': 'Impuestos Compra',
+            'purchase_price_total': 'Total Compra',
+            'purchase_state': 'Estado Compra',
+            
+            # Campos opcionales de inventario
             'product_uom_id': 'UdM',
             'incoming_qty': 'Qty Entrante',
             'outgoing_qty': 'Qty Saliente',
