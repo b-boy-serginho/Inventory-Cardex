@@ -148,12 +148,34 @@ select product_id, name, product_uom, product_uom_qty, price_unit, price_subtota
 select product_id, name, product_uom, product_qty, price_unit, price_subtotal, price_tax, price_total from purchase_order_line; 
 
 // EL JOIN DE COMPRA CON PRODUCTO
-select * from product_product, purchase_order_line where product_product.id=purchase_order_line.product_id;
+select product_product.volume, purchase_order_line.name from product_product, purchase_order_line where product_product.id=purchase_order_line.product_id;
 
 [FURN_0269] Office Chair Black
 [FURN_6666] Acoustic Bloc Screens
 [E-COM11] Cabinet with Doors
+
+[FURN_7777] Office Chair
 ------------------------------------------------------------------
+// PROMPT EN LA IA
+ANALIZA MI PROYECTO, ESTOY USANDO DOCKER
+MI BASE DE DATOS SE LLAMA inventario, mi usuario es 123, y la contraseña es 123
+ADEMAS MI USUARIO MAESTRO es 123456
+
+QUIERO MOSTRAR LOS CAMPOS DE purchase_order_line EN MI VISTA PERSONALIZADA, LA CUAL TENGO CREADA stock_move_views.xml, 
+agregando los campos de la COMPRA purchase_order_line, es de decir cuando me dirija a Inventario/reportes/movimentos detallados (cardex),
+aquí quiero que me muestre los campos de la venta, es decir una union de stock_move_line_report.py con purchase_order_line.py,
+cada campo con sus columnas independientes
+select product_id, product_qty, price_unit, price_subtotal, price_tax, price_total from purchase_order_line; 
+
+select name, product_uom_qty, price_unit, price_subtotal, price_tax, price_total from sale_order_line;
+------------------------------------------------------------------
+
+ahora, asi como muestre el color verde para los entrantes (incoming_qty) y color rojo para salientes (outgoing),
+quiero que muestres para los campos de la compra de color verde, y el campo de rojo para la venta,
+muéstralo en la vista stock.move.line.cardex.tree
+
+------------------------------------------------------------------
+
 openpg
 openpgwd
 
