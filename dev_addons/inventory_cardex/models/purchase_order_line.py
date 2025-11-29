@@ -96,6 +96,14 @@ class StockMoveLine(models.Model):
         help="Estado del pedido de compra"
     )
     
+    purchase_date = fields.Datetime(
+        string='Fecha Compra',
+        related='purchase_order_id.date_order',
+        readonly=True,
+        store=True,
+        help="Fecha del pedido de compra desde la base de datos"
+    )
+    
     @api.depends('purchase_line_id', 'purchase_line_id.order_id', 'purchase_line_id.order_id.state')
     def _compute_purchase_state(self):
         for line in self:

@@ -44,85 +44,119 @@ function applyColorsToQtyCells(rootElement) {
     });
 
     // ========== CAMPOS DE COMPRA - COLOR VERDE (#00b050) ==========
-    const purchaseFields = [
-        'purchase_product_qty', 'purchase_price_unit', 'purchase_price_subtotal',
-        'purchase_price_tax', 'purchase_price_total', 'purchase_order_id',
-        'purchase_product_name', 'purchase_state', 'has_purchase'
-    ];
+    // Primero, encontrar todas las filas de datos
+    const dataRows = rootElement.querySelectorAll('tr.o_data_row');
     
-    purchaseFields.forEach(fieldName => {
-        const cells = rootElement.querySelectorAll(`[name="${fieldName}"]`);
-        cells.forEach(cell => {
-            // Verificar si purchase_product_qty > 0 en la misma fila
-            const row = cell.closest('tr');
-            if (row) {
-                const qtyCell = row.querySelector('[name="purchase_product_qty"]');
-                if (qtyCell) {
-                    const qtyText = qtyCell.textContent.trim().replace(/[^\d.,-]/g, '').replace(',', '.');
-                    const qtyValue = parseFloat(qtyText) || 0;
-                    
-                    if (qtyValue > 0) {
-                        cell.style.color = '#00b050';
-                        cell.style.fontWeight = 'bold';
-                        // Aplicar color a todos los elementos dentro de la celda
-                        const innerElements = cell.querySelectorAll('*');
-                        innerElements.forEach(el => {
-                            el.style.color = '#00b050';
-                            el.style.fontWeight = 'bold';
-                        });
-                    } else {
-                        cell.style.color = '';
-                        cell.style.fontWeight = '';
-                        const innerElements = cell.querySelectorAll('*');
-                        innerElements.forEach(el => {
-                            el.style.color = '';
-                            el.style.fontWeight = '';
-                        });
-                    }
+    dataRows.forEach(row => {
+        // Buscar la celda de purchase_product_qty en esta fila
+        const purchaseQtyCell = row.querySelector('[name="purchase_product_qty"]');
+        let purchaseQtyValue = 0;
+        
+        if (purchaseQtyCell) {
+            // Obtener el valor de la cantidad, manejando diferentes formatos
+            const qtyText = purchaseQtyCell.textContent.trim();
+            // Remover caracteres no numéricos excepto punto, coma y signo menos
+            const cleanText = qtyText.replace(/[^\d.,-]/g, '').replace(',', '.');
+            purchaseQtyValue = parseFloat(cleanText) || 0;
+        }
+        
+        // Si purchase_product_qty > 0, aplicar color verde a todos los campos de compra
+        if (purchaseQtyValue > 0) {
+            const purchaseFields = [
+                'purchase_order_id', 'purchase_product_name', 'purchase_product_qty',
+                'purchase_price_unit', 'purchase_price_subtotal', 'purchase_price_tax',
+                'purchase_price_total', 'purchase_state', 'has_purchase'
+            ];
+            
+            purchaseFields.forEach(fieldName => {
+                const cell = row.querySelector(`[name="${fieldName}"]`);
+                if (cell) {
+                    cell.style.color = '#00b050';
+                    cell.style.fontWeight = 'bold';
+                    // Aplicar color a todos los elementos dentro de la celda (incluyendo widgets)
+                    const innerElements = cell.querySelectorAll('*');
+                    innerElements.forEach(el => {
+                        el.style.color = '#00b050';
+                        el.style.fontWeight = 'bold';
+                    });
                 }
-            }
-        });
-    });
-
-    // ========== CAMPOS DE VENTA - COLOR ROJO (#ff0000) ==========
-    const saleFields = [
-        'sale_product_uom_qty', 'sale_price_unit', 'sale_price_subtotal',
-        'sale_price_tax', 'sale_price_total', 'sale_order_id',
-        'sale_product_name', 'sale_state', 'has_sale'
-    ];
-    
-    saleFields.forEach(fieldName => {
-        const cells = rootElement.querySelectorAll(`[name="${fieldName}"]`);
-        cells.forEach(cell => {
-            // Verificar si sale_product_uom_qty > 0 en la misma fila
-            const row = cell.closest('tr');
-            if (row) {
-                const qtyCell = row.querySelector('[name="sale_product_uom_qty"]');
-                if (qtyCell) {
-                    const qtyText = qtyCell.textContent.trim().replace(/[^\d.,-]/g, '').replace(',', '.');
-                    const qtyValue = parseFloat(qtyText) || 0;
-                    
-                    if (qtyValue > 0) {
-                        cell.style.color = '#ff0000';
-                        cell.style.fontWeight = 'bold';
-                        // Aplicar color a todos los elementos dentro de la celda
-                        const innerElements = cell.querySelectorAll('*');
-                        innerElements.forEach(el => {
-                            el.style.color = '#ff0000';
-                            el.style.fontWeight = 'bold';
-                        });
-                    } else {
-                        cell.style.color = '';
-                        cell.style.fontWeight = '';
-                        const innerElements = cell.querySelectorAll('*');
-                        innerElements.forEach(el => {
-                            el.style.color = '';
-                            el.style.fontWeight = '';
-                        });
-                    }
+            });
+        } else {
+            // Si purchase_product_qty <= 0, remover estilos de todos los campos de compra
+            const purchaseFields = [
+                'purchase_order_id', 'purchase_product_name', 'purchase_product_qty',
+                'purchase_price_unit', 'purchase_price_subtotal', 'purchase_price_tax',
+                'purchase_price_total', 'purchase_state', 'has_purchase'
+            ];
+            
+            purchaseFields.forEach(fieldName => {
+                const cell = row.querySelector(`[name="${fieldName}"]`);
+                if (cell) {
+                    cell.style.color = '';
+                    cell.style.fontWeight = '';
+                    const innerElements = cell.querySelectorAll('*');
+                    innerElements.forEach(el => {
+                        el.style.color = '';
+                        el.style.fontWeight = '';
+                    });
                 }
-            }
-        });
+            });
+        }
+        
+        // Buscar la celda de sale_product_uom_qty en esta fila
+        const saleQtyCell = row.querySelector('[name="sale_product_uom_qty"]');
+        let saleQtyValue = 0;
+        
+        if (saleQtyCell) {
+            // Obtener el valor de la cantidad, manejando diferentes formatos
+            const qtyText = saleQtyCell.textContent.trim();
+            // Remover caracteres no numéricos excepto punto, coma y signo menos
+            const cleanText = qtyText.replace(/[^\d.,-]/g, '').replace(',', '.');
+            saleQtyValue = parseFloat(cleanText) || 0;
+        }
+        
+        // Si sale_product_uom_qty > 0, aplicar color rojo a todos los campos de venta
+        if (saleQtyValue > 0) {
+            const saleFields = [
+                'sale_order_id', 'sale_product_name', 'sale_product_uom_qty',
+                'sale_price_unit', 'sale_price_subtotal', 'sale_price_tax',
+                'sale_price_total', 'sale_state', 'has_sale'
+            ];
+            
+            saleFields.forEach(fieldName => {
+                const cell = row.querySelector(`[name="${fieldName}"]`);
+                if (cell) {
+                    cell.style.color = '#ff0000';
+                    cell.style.fontWeight = 'bold';
+                    // Aplicar color a todos los elementos dentro de la celda (incluyendo widgets)
+                    const innerElements = cell.querySelectorAll('*');
+                    innerElements.forEach(el => {
+                        el.style.color = '#ff0000';
+                        el.style.fontWeight = 'bold';
+                    });
+                }
+            });
+        } else {
+            // Si sale_product_uom_qty <= 0, remover estilos de todos los campos de venta
+            const saleFields = [
+                'sale_order_id', 'sale_product_name', 'sale_product_uom_qty',
+                'sale_price_unit', 'sale_price_subtotal', 'sale_price_tax',
+                'sale_price_total', 'sale_state', 'has_sale'
+            ];
+            
+            saleFields.forEach(fieldName => {
+                const cell = row.querySelector(`[name="${fieldName}"]`);
+                if (cell) {
+                    cell.style.color = '';
+                    cell.style.fontWeight = '';
+                    const innerElements = cell.querySelectorAll('*');
+                    innerElements.forEach(el => {
+                        el.style.color = '';
+                        el.style.fontWeight = '';
+                    });
+                }
+            });
+        }
     });
 }
 

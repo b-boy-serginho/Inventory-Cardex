@@ -66,6 +66,9 @@
                             <t t-set="total_sale_subtotal" t-value="0.0"/>
                             <t t-set="balance_qty" t-value="0.0"/>
                             <t t-set="balance_total_cost" t-value="0.0"/>
+                            <t t-set="first_sale_qty" t-value="0.0"/>
+                            <t t-set="first_sale_subtotal" t-value="0.0"/>
+                            <t t-set="is_first_sale" t-value="True"/>
                             
                             <t t-foreach="docs" t-as="o">
                                 <t t-set="purchase_qty" t-value="o.purchase_product_qty or 0.0"/>
@@ -128,7 +131,7 @@
                                     <!-- VENTA - CANTIDAD (rojo) -->
                                     <td style="border: 1px solid black; padding: 5px; text-align: center; color: #ff0000; font-weight: bold;">
                                         <t t-if="sale_qty > 0">
-                                            <span t-esc="int(sale_qty)"/>
+                                            <span t-esc="int(-sale_qty)"/>
                                         </t>
                                     </td>
                                     
@@ -142,7 +145,7 @@
                                     <!-- VENTA - SUBTOTAL (rojo) -->
                                     <td style="border: 1px solid black; padding: 5px; text-align: center; color: #ff0000; font-weight: bold;">
                                         <t t-if="sale_qty > 0">
-                                            <span t-esc="'{:,.2f}'.format(sale_subtotal)"/>
+                                            <span t-esc="'{:,.2f}'.format(-sale_subtotal)"/>
                                         </t>
                                     </td>
                                     
@@ -169,8 +172,18 @@
                                 <!-- Acumular totales -->
                                 <t t-set="total_purchase_qty" t-value="total_purchase_qty + purchase_qty"/>
                                 <t t-set="total_purchase_subtotal" t-value="total_purchase_subtotal + purchase_subtotal"/>
-                                <t t-set="total_sale_qty" t-value="total_sale_qty + sale_qty"/>
-                                <t t-set="total_sale_subtotal" t-value="total_sale_subtotal + sale_subtotal"/>
+                                <!-- Para ventas: primera venta menos suma de las demás -->
+                                <t t-if="sale_qty > 0">
+                                    <t t-if="is_first_sale">
+                                        <t t-set="first_sale_qty" t-value="sale_qty"/>
+                                        <t t-set="first_sale_subtotal" t-value="sale_subtotal"/>
+                                        <t t-set="is_first_sale" t-value="False"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-set="total_sale_qty" t-value="total_sale_qty + sale_qty"/>
+                                        <t t-set="total_sale_subtotal" t-value="total_sale_subtotal + sale_subtotal"/>
+                                    </t>
+                                </t>
                             </t>
                         </tbody>
                         
@@ -196,7 +209,8 @@
                                 
                                 <!-- TOTALES VENTA - CANTIDAD -->
                                 <td style="border: 1px solid black; padding: 5px; text-align: center; color:rgb(0, 0, 0);">
-                                    <span t-esc="int(total_sale_qty)"/>
+                                    <t t-set="final_sale_qty" t-value="first_sale_qty - total_sale_qty if first_sale_qty > 0 else -total_sale_qty"/>
+                                    <span t-esc="int(final_sale_qty)"/>
                                 </td>
                                 
                                 <!-- TOTALES VENTA - PRECIO (vacío) -->
@@ -204,7 +218,8 @@
                                 
                                 <!-- TOTALES VENTA - SUBTOTAL -->
                                 <td style="border: 1px solid black; padding: 5px; text-align: center; color:rgb(0, 0, 0);">
-                                    <span t-esc="'{:,.2f}'.format(total_sale_subtotal)"/>
+                                    <t t-set="final_sale_subtotal" t-value="first_sale_subtotal - total_sale_subtotal if first_sale_subtotal > 0 else -total_sale_subtotal"/>
+                                    <span t-esc="'{:,.2f}'.format(final_sale_subtotal)"/>
                                 </td>
                                 
                                 <!-- TOTALES SALDO FINAL - CANTIDAD -->
