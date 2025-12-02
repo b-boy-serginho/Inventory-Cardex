@@ -170,9 +170,10 @@ select product_id, product_qty, price_unit, price_subtotal, price_tax, price_tot
 select name, product_uom_qty, price_unit, price_subtotal, price_tax, price_total from sale_order_line;
 ------------------------------------------------------------------
 
-ahora, asi como muestre el color verde para los entrantes (incoming_qty) y color rojo para salientes (outgoing),
+ahora, asi como muestre el color verde para los entrantes (incoming_qty > 0) y color rojo para salientes (outgoing > 0),
 quiero que muestres para los campos de la compra de color verde, y el campo de rojo para la venta,
-muéstralo en la vista stock.move.line.cardex.tree
+muéstralo en la vista stock.move.line.cardex.tree, pero solo colocale el color verde a los campos de la compra que tienen valor mayor>0, y
+color rojo a los campos de la venta que tienen valor mayor>0
 
 ------------------------------------------------------------------
 
