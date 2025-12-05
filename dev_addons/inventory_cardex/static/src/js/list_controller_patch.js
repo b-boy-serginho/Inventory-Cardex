@@ -2,10 +2,12 @@
 
 import { ListController } from "@web/views/list/list_controller";
 import { patch } from "@web/core/utils/patch";
+import { _t } from "@web/core/l10n/translation";
 
 patch(ListController.prototype, {
     /**
      * Sobrescribir la acción de imprimir para capturar columnas visibles
+     * y permitir elegir entre PDF y Excel
      */
     async onClickPrint() {
         const recordIds = await this.getSelectedResIds();
@@ -24,12 +26,27 @@ patch(ListController.prototype, {
             console.log('Columnas visibles:', visibleFields);
             console.log('IDs seleccionados:', recordIds);
 
-            // Llamar al método del backend para generar el reporte con columnas dinámicas
-            const action = await this.orm.call(
+            // Mostrar diálogo para elegir formato usando confirmación de Odoo
+            const useExcel = window.confirm(
+                _t("¿Desea exportar a Excel?\n\nClic en Aceptar para Excel\nClic en Cancelar para PDF")
+            );
+
+            let action;
+            if (useExcel) {
+                // Generar Excel
+                action = await this.orm.call(
+                    'stock.move.line',
+                    'generate_dynamic_excel',
+                    [recordIds, visibleFields]
+                );
+            } else {
+                // Generar PDF (por defecto)
+                action = await this.orm.call(
                 'stock.move.line',
                 'generate_dynamic_report',
                 [recordIds, visibleFields]
             );
+            }
 
             return this.actionService.doAction(action);
         }

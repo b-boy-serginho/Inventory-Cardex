@@ -58,10 +58,10 @@
     </record>
 
     <!-- Menu para acceder al reporte -->
-    <menuitem id="menu_stock_cost_report"
+    <!-- <menuitem id="menu_stock_cost_report"
               name="Reporte de Costos"
               parent="stock.menu_stock_warehouse_mgmt"
               action="action_stock_cost_report_wizard"
-              sequence="100"/>
+              sequence="100"/> -->
 
 </odoo>

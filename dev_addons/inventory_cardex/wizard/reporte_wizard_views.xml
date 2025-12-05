@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de formulario del wizard -->
+    <record id="view_reporte_wizard_form" model="ir.ui.view">
+        <field name="name">reporte.wizard.form</field>
+        <field name="model">reporte.wizard</field>
+        <field name="arch" type="xml">
+            <form string="REPORTE DEL KARDEX" class="oe_report_wizard">
+                <!-- <header>
+                    <button string="Generar Reporte" name="action_generate_report" 
+                            type="object" class="btn-primary"/>
+                </header> -->
+                
+                <sheet>
+                    <div class="oe_title" style="text-align: center; margin-bottom: 20px;">
+                        <h1>REPORTE DEL KARDEX</h1>
+                    </div>
+                    
+                    <!-- <div style="background-color: #f0f0f0; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+                        <field name="move_line_ids" invisible="1" readonly="1"/>
+                        <span style="font-weight: bold; font-size: 14px;">Movimientos seleccionados: </span>
+                        <span style="font-weight: bold; font-size: 16px; color: #7b68ab;">
+                            <field name="moves_count" readonly="1" nolabel="1" force_save="1"/> movimientos
+                        </span>
+                    </div> -->
+                    
+                    <group>
+                        <group string="Rango de Fechas">
+                            <field name="date_from" string="Fecha Desde"/>
+                            <field name="date_to" string="Fecha Hasta"/>
+                        </group>
+                        <group string="Filtros">
+                            <field name="product_id" string="Producto" 
+                                   options="{'no_create': True, 'no_open': True}"
+                                   placeholder="Seleccione un producto o deje vacío para todos"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <label for="report_type" string="Tipo de reporte" 
+                               style="font-weight: bold; margin-top: 10px;"/>
+                    </group>
+                    <group>
+                        <field name="report_type" widget="radio" 
+                               options="{'horizontal': true}"/>
+                    </group>
+                </sheet>
+                
+                <footer>
+                    <button string="Limpiar Movimientos" name="action_clear_movements" 
+                            type="object" class="btn-secondary"/>
+                    <button string="Generar Reporte" name="action_generate_report" 
+                            type="object" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción del wizard -->
+    <record id="action_reporte_wizard" model="ir.actions.act_window">
+        <field name="name">Reporte</field>
+        <field name="res_model">reporte.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Acción de servidor vinculada para aparecer en el menú de Acciones (tuerca) -->
+    <record id="action_reporte_wizard_server" model="ir.actions.server">
+        <field name="name">Reporte</field>
+        <field name="model_id" ref="stock.model_stock_move_line"/>
+        <field name="binding_model_id" ref="stock.model_stock_move_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+# Obtener los IDs de los registros seleccionados
+record_ids = records.ids if records else []
+
+if not record_ids:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Sin selección',
+            'message': 'Por favor, seleccione al menos un movimiento para generar el reporte.',
+            'type': 'warning',
+        }
+    }
+else:
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Reporte',
+        'res_model': 'reporte.wizard',
+        'view_mode': 'form',
+        'target': 'new',
+        'context': {
+            'default_move_line_ids': [(6, 0, record_ids)],
+            'active_ids': record_ids,
+        },
+    }
+        </field>
+    </record>
+</odoo>
+

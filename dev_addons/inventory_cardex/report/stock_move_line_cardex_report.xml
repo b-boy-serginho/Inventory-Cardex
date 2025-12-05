@@ -2,7 +2,7 @@
 <odoo>
     <!-- Definición del reporte PDF -->
     <record id="action_report_stock_move_line_cardex" model="ir.actions.report">
-        <field name="name">Reporte Cardex Detallado</field>
+        <field name="name">Reporte Cardex Detallado (PDF)</field>
         <field name="model">stock.move.line</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">inventory_cardex.report_stock_move_line_cardex_document</field>
@@ -10,6 +10,47 @@
         <field name="binding_model_id" ref="stock.model_stock_move_line"/>
         <field name="binding_type">report</field>
         <field name="print_report_name">'Cardex_Valorizado_%s' % (object.product_id.name)</field>
+    </record>
+
+    <!-- Acción de servidor para exportar a Excel -->
+    <record id="action_export_stock_move_line_cardex_excel" model="ir.actions.server">
+        <!-- <field name="name">Exportar Cardex a Excel</field> -->
+        <field name="model_id" ref="stock.model_stock_move_line"/>
+        <field name="binding_model_id" ref="stock.model_stock_move_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+# Obtener los IDs de los registros seleccionados
+record_ids = records.ids if records else []
+
+if not record_ids:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Sin selección',
+            'message': 'Por favor, seleccione al menos un registro para exportar.',
+            'type': 'warning',
+        }
+    }
+else:
+    # Obtener las columnas visibles desde el contexto
+    # Por defecto, usaremos las columnas más comunes
+    # Nota: Las columnas visibles se obtendrán desde JavaScript cuando se use el botón directo
+    visible_fields = [
+        'date', 'reference', 'location_id', 'location_dest_id', 
+        'product_id', 'quantity', 'product_cost', 'line_cost', 'state',
+        'has_sale', 'sale_order_id', 'sale_product_name', 'sale_product_uom_qty',
+        'sale_price_unit', 'sale_price_subtotal', 'sale_price_tax', 'sale_price_total', 'sale_state',
+        'has_purchase', 'purchase_order_id', 'purchase_product_name', 'purchase_product_qty',
+        'purchase_price_unit', 'purchase_price_subtotal', 'purchase_price_tax', 'purchase_price_total', 'purchase_state',
+        'product_uom_id', 'lot_id', 'picking_id'
+    ]
+    
+    # Llamar al método para generar Excel
+    action = env['stock.move.line'].generate_dynamic_excel(record_ids, visible_fields)
+        </field>
     </record>
 
     <!-- Template principal para reporte estilo Cardex Valorizado -->
@@ -66,6 +107,8 @@
                             <t t-set="total_sale_subtotal" t-value="0.0"/>
                             <t t-set="balance_qty" t-value="0.0"/>
                             <t t-set="balance_total_cost" t-value="0.0"/>
+                            <t t-set="balance_avg_cost" t-value="0.0"/>
+                            <t t-set="last_avg_cost" t-value="0.0"/>
                             <t t-set="first_sale_qty" t-value="0.0"/>
                             <t t-set="first_sale_subtotal" t-value="0.0"/>
                             <t t-set="is_first_sale" t-value="True"/>
@@ -80,7 +123,8 @@
                                 <t t-set="sale_subtotal" t-value="o.sale_price_subtotal or 0.0"/>
                                 
                                 <!-- Calcular costo promedio actual antes de la transacción -->
-                                <t t-set="current_avg_cost" t-value="balance_total_cost / balance_qty if balance_qty > 0 else 0.0"/>
+                                <!-- Si el saldo es cero o negativo, usar el último costo promedio conocido -->
+                                <t t-set="current_avg_cost" t-value="balance_total_cost / balance_qty if balance_qty != 0 else last_avg_cost"/>
                                 
                                 <!-- Actualizar saldo: compras aumentan, ventas disminuyen -->
                                 <t t-if="purchase_qty > 0">
@@ -89,12 +133,24 @@
                                 </t>
                                 
                                 <t t-if="sale_qty > 0">
+                                    <!-- Para ventas: restar cantidad y costo -->
+                                    <!-- Si el saldo es negativo o cero, continuar procesando -->
                                     <t t-set="balance_qty" t-value="balance_qty - sale_qty"/>
-                                    <t t-set="balance_total_cost" t-value="balance_total_cost - (sale_qty * current_avg_cost)"/>
+                                    <!-- Calcular el costo a restar: usar el costo promedio actual -->
+                                    <t t-set="cost_to_subtract" t-value="sale_qty * current_avg_cost"/>
+                                    <t t-set="balance_total_cost" t-value="balance_total_cost - cost_to_subtract"/>
                                 </t>
                                 
                                 <!-- Calcular costo promedio del saldo después de la transacción -->
-                                <t t-set="balance_avg_cost" t-value="balance_total_cost / balance_qty if balance_qty > 0 else 0.0"/>
+                                <!-- Permitir saldo negativo para continuar procesando -->
+                                <t t-if="balance_qty != 0">
+                                    <t t-set="balance_avg_cost" t-value="balance_total_cost / balance_qty"/>
+                                    <t t-set="last_avg_cost" t-value="balance_avg_cost"/>
+                                </t>
+                                <t t-else="">
+                                    <!-- Si el saldo es cero, mantener el último costo promedio conocido -->
+                                    <t t-set="balance_avg_cost" t-value="last_avg_cost"/>
+                                </t>
                                 
                                 <tr>
                                     <!-- Fecha -->
@@ -156,14 +212,14 @@
                                     
                                     <!-- SALDO FINAL - COSTO PROMEDIO -->
                                     <td style="border: 1px solid black; padding: 5px; text-align: center;">
-                                        <t t-if="balance_qty > 0">
+                                        <t t-if="balance_qty != 0">
                                             <span t-esc="'{:,.2f}'.format(balance_avg_cost)"/>
                                         </t>
                                     </td>
                                     
                                     <!-- SALDO FINAL - COSTO TOTAL -->
                                     <td style="border: 1px solid black; padding: 5px; text-align: center;">
-                                        <t t-if="balance_qty > 0">
+                                        <t t-if="balance_qty != 0">
                                             <span t-esc="'{:,.2f}'.format(balance_total_cost)"/>
                                         </t>
                                     </td>

@@ -123,7 +123,7 @@
         <field name="model">stock.move.line</field>
         <field name="priority">10</field> <!-- Alta prioridad para usar esta vista -->
         <field name="arch" type="xml">
-            <tree string="Movimientos Detallados (Cardex)" editable="bottom">
+            <tree string="Kardex" editable="bottom">
                 <!-- Campos técnicos (ocultos por defecto pero disponibles para dominios) -->
                 <field name="product_uom_category_id" optional="hide"/>
                 <field name="company_id" optional="hide"/>
@@ -214,7 +214,7 @@
 
     <!-- Acción de ventana para abrir los movimientos detallados con costos -->
     <record id="action_stock_move_line_cardex" model="ir.actions.act_window">
-        <field name="name">Movimientos Detallados (Cardex)</field>
+        <field name="name">Kardex</field>
         <field name="res_model">stock.move.line</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_stock_move_line_cardex_tree"/>
@@ -233,7 +233,7 @@
     <!-- Ítem de menú en Inventario > Reportes -->
     <menuitem 
         id="menu_stock_move_line_cardex"
-        name="Movimientos Detallados (Cardex)"
+        name="Kardex"
         parent="stock.menu_warehouse_report"
         action="action_stock_move_line_cardex"
         sequence="100"/>

@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_stock_cost_report_wizard_user,stock.cost.report.wizard.user,model_stock_cost_report_wizard,stock.group_stock_user,1,1,1,1
 access_stock_cost_report_wizard_manager,stock.cost.report.wizard.manager,model_stock_cost_report_wizard,stock.group_stock_manager,1,1,1,1
+access_reporte_wizard_user,reporte.wizard.user,model_reporte_wizard,stock.group_stock_user,1,1,1,1
+access_reporte_wizard_manager,reporte.wizard.manager,model_reporte_wizard,stock.group_stock_manager,1,1,1,1

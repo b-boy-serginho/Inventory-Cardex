@@ -20,6 +20,7 @@
         # 'views/sale_order_line_views.xml',  # Temporalmente desactivado por error de esquema XML
         'views/assets.xml',
         'wizard/stock_cost_report_wizard_views.xml',
+        'wizard/reporte_wizard_views.xml',
         # 'wizard/stock_move_line_report_wizard_views.xml',  # Comentado temporalmente
         'report/stock_cost_report_template.xml',
         'report/stock_move_line_cardex_report.xml',
