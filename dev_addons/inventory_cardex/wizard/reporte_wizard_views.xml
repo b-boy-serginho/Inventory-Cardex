@@ -59,7 +59,7 @@
 
     <!-- Acción del wizard -->
     <record id="action_reporte_wizard" model="ir.actions.act_window">
-        <field name="name">Reporte</field>
+        <field name="name">Generar Reporte</field>
         <field name="res_model">reporte.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -67,7 +67,7 @@
 
     <!-- Acción de servidor vinculada para aparecer en el menú de Acciones (tuerca) -->
     <record id="action_reporte_wizard_server" model="ir.actions.server">
-        <field name="name">Reporte</field>
+        <field name="name">Generar Reporte</field>
         <field name="model_id" ref="stock.model_stock_move_line"/>
         <field name="binding_model_id" ref="stock.model_stock_move_line"/>
         <field name="binding_view_types">list</field>
@@ -90,7 +90,7 @@ if not record_ids:
 else:
     action = {
         'type': 'ir.actions.act_window',
-        'name': 'Reporte',
+        'name': 'Generar Reporte',
         'res_model': 'reporte.wizard',
         'view_mode': 'form',
         'target': 'new',

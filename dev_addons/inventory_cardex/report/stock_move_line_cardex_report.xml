@@ -2,7 +2,7 @@
 <odoo>
     <!-- Definición del reporte PDF -->
     <record id="action_report_stock_move_line_cardex" model="ir.actions.report">
-        <field name="name">Reporte Cardex Detallado (PDF)</field>
+        <field name="name">Reporte Kardex Valorizado</field>
         <field name="model">stock.move.line</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">inventory_cardex.report_stock_move_line_cardex_document</field>
@@ -13,8 +13,9 @@
     </record>
 
     <!-- Acción de servidor para exportar a Excel -->
+    <!--
     <record id="action_export_stock_move_line_cardex_excel" model="ir.actions.server">
-        <!-- <field name="name">Exportar Cardex a Excel</field> -->
+        <field name="name">Exportar Cardex a Excel</field>
         <field name="model_id" ref="stock.model_stock_move_line"/>
         <field name="binding_model_id" ref="stock.model_stock_move_line"/>
         <field name="binding_view_types">list</field>
@@ -52,6 +53,7 @@ else:
     action = env['stock.move.line'].generate_dynamic_excel(record_ids, visible_fields)
         </field>
     </record>
+    -->
 
     <!-- Template principal para reporte estilo Cardex Valorizado -->
     <template id="report_stock_move_line_cardex_document">
@@ -82,8 +84,8 @@ else:
                             <tr style="background-color: #7b68ab; color: white; font-weight: bold;">
                                 <th style="border: 1px solid black; padding: 8px;">Fecha</th>
                                 <th style="border: 1px solid black; padding: 8px;">REFERENCIA</th>
-                                <th colspan="3" style="border: 1px solid black; padding: 8px; text-align: center;">COMPRA</th>
-                                <th colspan="3" style="border: 1px solid black; padding: 8px; text-align: center;">VENTA</th>
+                                <th colspan="3" style="border: 1px solid black; padding: 8px; text-align: center;">ENTRADA</th>
+                                <th colspan="3" style="border: 1px solid black; padding: 8px; text-align: center;">SALIDA</th>
                                 <th colspan="3" style="border: 1px solid black; padding: 8px; text-align: center;">SALDO FINAL</th>
                             </tr>
                             <tr style="background-color: #7b68ab; color: white; font-weight: bold;">
@@ -95,9 +97,9 @@ else:
                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">CANTIDAD</th>
                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">PRECIO</th>
                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">SUBTOTAL</th>
-                                <th style="border: 1px solid black; padding: 8px; text-align: center;">CANTIDAD</th>
+                                <th style="border: 1px solid black; padding: 8px; text-align: center;">CANTIDAD</th>                               
                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">COSTO PROMEDIO</th>
-                                <th style="border: 1px solid black; padding: 8px; text-align: center;">COSTO TOTAL</th>
+                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">VALOR TOTAL</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -283,11 +285,19 @@ else:
                                     <span t-esc="int(balance_qty)"/>
                                 </td>
                                 
-                                <!-- TOTALES SALDO FINAL - COSTO PROMEDIO (vacío) -->
-                                <td style="border: 1px solid black; padding: 5px;"></td>
+                                <!-- TOTALES SALDO FINAL - COSTO PROMEDIO -->
+                                <td style="border: 1px solid black; padding: 5px; text-align: center;">
+                                    <t t-if="balance_qty != 0">
+                                        <span t-esc="'{:,.2f}'.format(balance_avg_cost)"/>
+                                    </t>
+                                </td>
                                 
-                                <!-- TOTALES SALDO FINAL - COSTO TOTAL (vacío) -->
-                                <td style="border: 1px solid black; padding: 5px;"></td>
+                                <!-- TOTALES SALDO FINAL - COSTO TOTAL -->
+                                <td style="border: 1px solid black; padding: 5px; text-align: center;">
+                                    <t t-if="balance_qty != 0">
+                                        <span t-esc="'{:,.2f}'.format(balance_total_cost)"/>
+                                    </t>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
