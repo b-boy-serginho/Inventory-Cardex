@@ -25,12 +25,22 @@
                     </div> -->
                     
                     <group>
+                        <group string="Opciones">
+                            <field name="is_wizard" string="Habilitar Filtros"/>
+                        </group>
+                    </group>
+                    
+                    <group>
                         <group string="Rango de Fechas">
-                            <field name="date_from" string="Fecha Desde"/>
-                            <field name="date_to" string="Fecha Hasta"/>
+                            <field name="not_is_wizard" invisible="1"/>
+                            <field name="date_from" string="Fecha Desde" 
+                                   readonly="not_is_wizard"/>
+                            <field name="date_to" string="Fecha Hasta" 
+                                   readonly="not_is_wizard"/>
                         </group>
                         <group string="Filtros">
                             <field name="product_id" string="Producto" 
+                                   readonly="not_is_wizard"
                                    options="{'no_create': True, 'no_open': True}"
                                    placeholder="Seleccione un producto o deje vacío para todos"/>
                         </group>
